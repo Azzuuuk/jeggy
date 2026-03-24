@@ -15,7 +15,7 @@ const getRarityColor = (rarity: string) => {
   switch (rarity) {
     case 'common': return 'text-gray-300 border-gray-500/50 from-gray-500/10'
     case 'rare': return 'text-blue-400 border-blue-500/50 from-blue-500/10'
-    case 'epic': return 'text-purple-400 border-purple-500/50 from-purple-500/10'
+    case 'epic': return 'text-accent-teal border-accent-teal/50 from-accent-teal/10'
     case 'legendary': return 'text-yellow-400 border-yellow-500/50 from-yellow-500/10'
     default: return 'text-gray-400 border-gray-600/50 from-gray-500/10'
   }

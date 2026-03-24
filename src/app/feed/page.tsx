@@ -62,7 +62,7 @@ function getActivityVerb(type: string) {
 function getActivityIcon(type: string) {
   switch (type) {
     case 'rated_game': return <Star size={12} className="text-accent-orange fill-accent-orange" />;
-    case 'reviewed_game': return <MessageSquare size={12} className="text-purple-400" />;
+    case 'reviewed_game': return <MessageSquare size={12} className="text-accent-teal" />;
     case 'created_list': return <ListOrdered size={12} className="text-accent-teal" />;
     case 'started_playing': return <Play size={12} className="text-accent-green" />;
     case 'completed_game': return <Trophy size={12} className="text-yellow-400" />;

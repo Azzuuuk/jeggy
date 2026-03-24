@@ -51,7 +51,7 @@ const profileDbToStatus: Record<string, string> = Object.fromEntries(
 // Visual config for each status shelf
 const STATUS_SHELF_CONFIG = [
   { dbValue: 'playing', label: 'Currently Playing', icon: <Play size={14} className="text-teal-400" />, iconBg: 'bg-teal-500/15', ringColor: 'ring-teal-500/30', barColor: 'bg-teal-500', lineColor: 'bg-teal-500/20' },
-  { dbValue: 'completed', label: 'Completed', icon: <Trophy size={14} className="text-purple-400" />, iconBg: 'bg-purple-500/15', ringColor: 'ring-purple-500/30', barColor: 'bg-purple-500', lineColor: 'bg-purple-500/20' },
+  { dbValue: 'completed', label: 'Completed', icon: <Trophy size={14} className="text-accent-teal" />, iconBg: 'bg-accent-teal/15', ringColor: 'ring-accent-teal/30', barColor: 'bg-accent-teal', lineColor: 'bg-accent-teal/20' },
   { dbValue: '100_percent', label: '100% Completed', icon: <Award size={14} className="text-yellow-400" />, iconBg: 'bg-yellow-500/15', ringColor: 'ring-yellow-500/30', barColor: 'bg-yellow-500', lineColor: 'bg-yellow-500/20' },
   { dbValue: 'played', label: 'Played', icon: <Check size={14} className="text-green-400" />, iconBg: 'bg-green-500/15', ringColor: 'ring-green-500/30', barColor: 'bg-green-500', lineColor: 'bg-green-500/20' },
   { dbValue: 'want_to_play', label: 'Want to Play', icon: <Bookmark size={14} className="text-orange-400" />, iconBg: 'bg-orange-500/15', ringColor: 'ring-orange-500/30', barColor: 'bg-orange-500', lineColor: 'bg-orange-500/20' },
@@ -476,9 +476,14 @@ function RealProfile({
 
         {/* Profile content overlaid on banner */}
         <div className="relative z-10 flex flex-col items-center justify-center min-h-[320px] sm:min-h-[400px] text-center px-4 py-8">
-          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-accent-green flex items-center justify-center text-2xl font-bold text-black ring-4 ring-white/20">
-            {initials}
-          </div>
+          {profile.avatar_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={profile.avatar_url} alt={displayName} className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover ring-4 ring-white/20" />
+          ) : (
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-accent-green flex items-center justify-center text-2xl font-bold text-black ring-4 ring-white/20">
+              {initials}
+            </div>
+          )}
           <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mt-4 font-[family-name:var(--font-display)]">{displayName}</h1>
           <p className="text-text-muted text-sm">@{profile.username}</p>
           {profile.bio && (
@@ -1366,9 +1371,14 @@ function MockProfile({ username }: { username: string }) {
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/60 to-bg-primary" />
 
         <div className="relative z-10 flex flex-col items-center justify-center min-h-[320px] sm:min-h-[400px] text-center px-4 py-8">
-          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-accent-green flex items-center justify-center text-2xl font-bold text-black ring-4 ring-white/20">
-            {initials}
-          </div>
+          {profile.avatar_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={profile.avatar_url} alt={profile.displayName} className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover ring-4 ring-white/20" />
+          ) : (
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-accent-green flex items-center justify-center text-2xl font-bold text-black ring-4 ring-white/20">
+              {initials}
+            </div>
+          )}
           <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mt-4 font-[family-name:var(--font-display)]">{profile.displayName}</h1>
           <p className="text-text-muted text-sm">@{profile.username}</p>
           <p className="text-text-secondary text-sm mt-2 max-w-md line-clamp-2">{profile.bio}</p>

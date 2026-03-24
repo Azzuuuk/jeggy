@@ -188,7 +188,7 @@ export default function QuickLogModal({ isOpen, onClose, game: initialGame }: Qu
             {[
               { value: 'playing', label: 'Playing', icon: '▶', color: 'border-teal-500 bg-teal-500/15 text-teal-400' },
               { value: 'played', label: 'Played', icon: '✓', color: 'border-green-500 bg-green-500/15 text-green-400' },
-              { value: 'completed', label: 'Completed', icon: '★', color: 'border-purple-500 bg-purple-500/15 text-purple-400' },
+              { value: 'completed', label: 'Completed', icon: '★', color: 'border-accent-teal bg-accent-teal/15 text-accent-teal' },
               { value: '100_percent', label: '100%', icon: '✦', color: 'border-yellow-500 bg-yellow-500/15 text-yellow-400' },
               { value: 'want_to_play', label: 'Want to Play', icon: '+', color: 'border-orange-500 bg-orange-500/15 text-orange-400' },
               { value: 'dropped', label: 'Dropped', icon: '✕', color: 'border-red-500 bg-red-500/15 text-red-400' },

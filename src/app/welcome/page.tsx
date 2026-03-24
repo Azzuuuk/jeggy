@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Gamepad2 } from 'lucide-react';
 import { games } from '@/lib/mockData';
 
 const PLATFORMS = ['PC', 'PlayStation 5', 'Xbox Series X', 'Switch', 'Mobile'] as const;
@@ -96,7 +95,8 @@ export default function WelcomePage() {
       {/* Step 1: Welcome */}
       {step === 1 && (
         <div className="flex flex-col items-center justify-center text-center min-h-[80vh]">
-          <Gamepad2 size={56} className="text-accent-green mb-6" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/JeggyLogo.png" alt="Jeggy" className="h-16 w-auto mb-6" />
           <h1 className="text-4xl font-bold font-[family-name:var(--font-display)] tracking-tight text-text-primary mb-4">
             Welcome to Jeggy
           </h1>

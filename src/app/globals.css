@@ -8,8 +8,8 @@
   --color-accent-orange-hover: #d9ff33;
   --color-accent-green: #CCFF00;
   --color-accent-green-hover: #d9ff33;
-  --color-accent-teal: #6366F1;
-  --color-accent-teal-hover: #818cf8;
+  --color-accent-teal: #2dd4bf;
+  --color-accent-teal-hover: #5eead4;
   --color-text-primary: #f0f0f0;
   --color-text-secondary: #999999;
   --color-text-muted: #6A6A72;
@@ -21,18 +21,18 @@
   /* Neon accent palette for landing page */
   --color-neon-cyan: #00f0ff;
   --color-neon-magenta: #ff006e;
-  --color-neon-purple: #9d4edd;
+  --color-neon-purple: #2dd4bf;
   --color-neon-green: #06ffa5;
   --color-neon-orange: #ff8500;
   /* Premium landing palette */
   --color-acid: #CCFF00;
-  --color-indigo: #6366F1;
+  --color-indigo: #2dd4bf;
   --color-peach: #FF9F7C;
   --color-rose: #F472B6;
-  --color-surface: #080808;
-  --color-surface-raised: #111111;
-  --color-surface-card: #0D0D0D;
-  --color-line: #1A1A1A;
+  --color-surface: #111115;
+  --color-surface-raised: #1A1A1F;
+  --color-surface-card: #151519;
+  --color-line: #242430;
   --font-display: var(--font-display);
   --font-mono: var(--font-mono);
 }
@@ -145,7 +145,7 @@ h1, h2, h3, h4, h5, h6 {
   bottom: -5%;
   left: -10%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(99, 102, 241, 0.03) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(45, 212, 191, 0.12) 0%, rgba(45, 212, 191, 0.03) 40%, transparent 70%);
   filter: blur(80px);
   animation: ambient-drift 30s ease-in-out infinite reverse;
 }
@@ -275,11 +275,11 @@ main {
 
 /* Glass slab card */
 .glass-slab {
-  background: rgba(13, 13, 13, 0.6);
+  background: rgba(21, 21, 25, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .glass-slab:hover {
@@ -290,8 +290,8 @@ main {
 /* Connective grid border lines */
 .connective-grid {
   background-image:
-    linear-gradient(to right, #1A1A1A 1px, transparent 1px),
-    linear-gradient(to bottom, #1A1A1A 1px, transparent 1px);
+    linear-gradient(to right, #242430 1px, transparent 1px),
+    linear-gradient(to bottom, #242430 1px, transparent 1px);
   background-size: 80px 80px;
   mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 70%);
   -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 70%);

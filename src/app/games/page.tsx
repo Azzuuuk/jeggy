@@ -237,7 +237,7 @@ function BrowseContent() {
               </button>
             ))}
             {timeToBeatFilter !== 'all' && (
-              <button onClick={() => setTimeToBeatFilter('all')} className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded-sm text-xs font-medium hover:bg-purple-500/20 transition-all duration-300">
+              <button onClick={() => setTimeToBeatFilter('all')} className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-accent-teal/10 border border-accent-teal/20 text-accent-teal rounded-sm text-xs font-medium hover:bg-accent-teal/20 transition-all duration-300">
                 {timeToBeatFilter === 'short' ? '0-10h' : timeToBeatFilter === 'medium' ? '10-30h' : timeToBeatFilter === 'long' ? '30-60h' : '60h+'} <X size={11} />
               </button>
             )}
@@ -329,7 +329,7 @@ function BrowseContent() {
                     onClick={() => setTimeToBeatFilter(opt.value)}
                     className={`w-full text-left px-2.5 py-1.5 rounded-md text-sm transition-all duration-300 ${
                       timeToBeatFilter === opt.value
-                        ? 'bg-purple-500/10 text-purple-400 font-medium'
+                        ? 'bg-accent-teal/10 text-accent-teal font-medium'
                         : 'text-text-secondary hover:text-text-primary hover:bg-bg-card'
                     }`}
                   >

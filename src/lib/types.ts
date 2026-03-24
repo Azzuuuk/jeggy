@@ -117,6 +117,7 @@ export interface EnhancedUserProfile {
   handle: string;
   displayName: string;
   bio: string;
+  avatar_url?: string | null;
   memberSince: string;
   platforms: Platform[];
   topFourGames: string[];

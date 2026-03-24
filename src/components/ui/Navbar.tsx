@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Menu, X, User, Gamepad2, Plus, LogOut } from 'lucide-react';
+import { Menu, X, User, Plus, LogOut } from 'lucide-react';
 import SearchAutocomplete from './SearchAutocomplete';
 import AddMenu from './AddMenu';
 import { NotificationsBell } from './NotificationsBell';
@@ -39,9 +39,10 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-14 gap-4">
             {/* Logo */}
-            <Link href={user ? '/home' : '/'} className="flex items-center gap-2 flex-shrink-0 group">
-              <Gamepad2 size={24} className="text-accent-orange group-hover:rotate-[-8deg] transition-transform duration-300" />
-              <span className="text-lg font-bold tracking-tight text-text-primary font-[family-name:var(--font-display)]">
+            <Link href={user ? '/home' : '/'} className="flex items-center -space-x-0.5 flex-shrink-0 group">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/JeggyLogo.png" alt="Jeggy" className="h-11 w-auto group-hover:rotate-[-8deg] transition-transform duration-300" />
+              <span className="text-xl font-bold tracking-tight text-text-primary font-[family-name:var(--font-display)]">
                 Jeggy
               </span>
             </Link>
@@ -90,9 +91,14 @@ export default function Navbar() {
                   <NotificationsBell />
                   <Link
                     href={profileUrl}
-                    className="w-8 h-8 rounded-sm bg-bg-elevated border border-border flex items-center justify-center text-text-secondary hover:text-text-primary hover:border-accent-orange/30 transition-all duration-300"
+                    className="w-8 h-8 rounded-full bg-bg-elevated border border-border flex items-center justify-center text-text-secondary hover:text-text-primary hover:border-accent-orange/30 transition-all duration-300 overflow-hidden"
                   >
-                    <User size={16} />
+                    {profile?.avatar_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <User size={16} />
+                    )}
                   </Link>
                   <button
                     onClick={handleSignOut}

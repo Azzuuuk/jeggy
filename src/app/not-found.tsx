@@ -1,12 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { Gamepad2 } from 'lucide-react';
 
 export default function NotFound() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
-      <Gamepad2 size={64} className="text-text-muted/30 mb-6" />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/JeggyLogo.png" alt="Jeggy" className="h-20 w-auto opacity-30 mb-6" />
       <h1 className="text-6xl font-bold font-[family-name:var(--font-mono)] text-accent-orange mb-2">404</h1>
       <h2 className="text-xl font-semibold font-[family-name:var(--font-display)] text-primary mb-2">
         Looks like this page rolled a critical miss

@@ -72,7 +72,7 @@ export default function AdminDashboard() {
     { val: stats.totalUsers, label: 'Total Users', color: 'text-accent-green', icon: Users },
     { val: stats.totalGames, label: 'Total Games', color: 'text-blue-400', icon: Gamepad2 },
     { val: stats.totalRatings, label: 'Total Ratings', color: 'text-accent-orange', icon: Star },
-    { val: stats.totalReviews, label: 'Total Reviews', color: 'text-purple-400', icon: FileText },
+    { val: stats.totalReviews, label: 'Total Reviews', color: 'text-accent-teal', icon: FileText },
     { val: stats.totalLists, label: 'Total Lists', color: 'text-accent-teal', icon: ListOrdered },
     { val: stats.totalSessions, label: 'Gaming Sessions', color: 'text-yellow-400', icon: Clock },
   ];

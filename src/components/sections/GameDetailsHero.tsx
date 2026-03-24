@@ -18,7 +18,7 @@ export default function GameDetailsHero({ game }: GameDetailsHeroProps) {
   const statusOptions: { label: GameStatus; icon: React.ReactNode; color: string }[] = [
     { label: 'Playing', icon: <Play size={14} />, color: 'bg-accent-teal/15 text-accent-teal border-accent-teal/30' },
     { label: 'Played', icon: <Check size={14} />, color: 'bg-green-500/15 text-green-400 border-green-500/30' },
-    { label: 'Completed', icon: <Check size={14} />, color: 'bg-purple-500/15 text-purple-400 border-purple-500/30' },
+    { label: 'Completed', icon: <Check size={14} />, color: 'bg-accent-teal/15 text-accent-teal border-accent-teal/30' },
     { label: '100% Completed', icon: <Check size={14} />, color: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30' },
     { label: 'Want to Play', icon: <Bookmark size={14} />, color: 'bg-accent-orange/15 text-accent-orange border-accent-orange/30' },
     { label: 'Dropped', icon: <X size={14} />, color: 'bg-red-500/15 text-red-400 border-red-500/30' },

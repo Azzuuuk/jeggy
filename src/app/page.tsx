@@ -7,9 +7,8 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import {
-  ArrowRight, ChevronDown, Star, Flame, Users, Gamepad2,
-  Heart, MessageCircle, Trophy, Swords, Monitor, Calendar,
-  Globe, Check, Play, Zap, Tv, Camera, Dice5
+  ArrowRight, ChevronDown, Star, Flame, Gamepad2,
+  Heart, MessageCircle, Play, Zap, Tv, Camera, Check
 } from 'lucide-react';
 
 interface GameCover {
@@ -91,7 +90,7 @@ function ParticleField() {
       size: Math.random() * 2 + 1,
       dur: 18 + Math.random() * 22,
       delay: Math.random() * -30,
-      color: ['#CCFF00', '#6366F1', '#FF9F7C', '#CCFF00', '#6366F1'][i % 5],
+      color: ['#CCFF00', '#2dd4bf', 'rgba(255,255,255,0.25)', '#CCFF00', '#2dd4bf'][i % 5],
     })),
   []);
 
@@ -120,16 +119,16 @@ function ParticleField() {
 function AtmosphericFog({ variant = 'default' }: { variant?: 'default' | 'indigo' | 'warm' }) {
   const configs = {
     default: [
-      { color: 'bg-acid/[0.04]', pos: 'top-[-20%] left-[-10%]', size: 'w-[600px] h-[600px]', anim: 'landing-fog-drift' },
-      { color: 'bg-indigo/[0.05]', pos: 'top-[30%] right-[-5%]', size: 'w-[500px] h-[500px]', anim: 'landing-fog-drift-reverse' },
+      { color: 'bg-acid/[0.03]', pos: 'top-[-20%] left-[-10%]', size: 'w-[600px] h-[600px]', anim: 'landing-fog-drift' },
+      { color: 'bg-indigo/[0.04]', pos: 'top-[30%] right-[-5%]', size: 'w-[500px] h-[500px]', anim: 'landing-fog-drift-reverse' },
     ],
     indigo: [
-      { color: 'bg-indigo/[0.06]', pos: 'top-[-10%] right-[10%]', size: 'w-[500px] h-[500px]', anim: 'landing-fog-drift' },
-      { color: 'bg-peach/[0.04]', pos: 'bottom-[-10%] left-[20%]', size: 'w-[450px] h-[450px]', anim: 'landing-fog-drift-reverse' },
+      { color: 'bg-indigo/[0.05]', pos: 'top-[-10%] right-[10%]', size: 'w-[500px] h-[500px]', anim: 'landing-fog-drift' },
+      { color: 'bg-acid/[0.03]', pos: 'bottom-[-10%] left-[20%]', size: 'w-[450px] h-[450px]', anim: 'landing-fog-drift-reverse' },
     ],
     warm: [
-      { color: 'bg-peach/[0.05]', pos: 'top-[-15%] left-[20%]', size: 'w-[500px] h-[500px]', anim: 'landing-fog-drift' },
-      { color: 'bg-rose/[0.03]', pos: 'bottom-[10%] right-[-5%]', size: 'w-[400px] h-[400px]', anim: 'landing-fog-drift-slow' },
+      { color: 'bg-peach/[0.04]', pos: 'top-[-15%] left-[20%]', size: 'w-[500px] h-[500px]', anim: 'landing-fog-drift' },
+      { color: 'bg-indigo/[0.03]', pos: 'bottom-[10%] right-[-5%]', size: 'w-[400px] h-[400px]', anim: 'landing-fog-drift-slow' },
     ],
   };
 
@@ -181,22 +180,21 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen -mt-14 overflow-hidden bg-surface landing-noise relative">
-      {/* Subtle ambient color washes to break up flat black */}
+      {/* Subtle ambient color washes */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute top-0 left-0 w-full h-[60vh] bg-gradient-to-b from-indigo/[0.03] to-transparent" />
-        <div className="absolute top-[40%] right-0 w-[60%] h-[40vh] bg-gradient-to-l from-acid/[0.02] to-transparent" />
-        <div className="absolute top-[70%] left-0 w-[50%] h-[30vh] bg-gradient-to-r from-rose/[0.02] to-transparent" />
+        <div className="absolute top-0 left-0 w-full h-[60vh] bg-gradient-to-b from-indigo/[0.02] to-transparent" />
+        <div className="absolute top-[40%] right-0 w-[60%] h-[40vh] bg-gradient-to-l from-acid/[0.015] to-transparent" />
+        <div className="absolute top-[75%] left-0 w-[50%] h-[30vh] bg-gradient-to-r from-peach/[0.01] to-transparent" />
       </div>
       <ConnectiveGrid />
       <div className="relative z-10">
         <HeroSection games={games} />
         <StatsSection games={games} />
-        <EcosystemStrip />
         <FeaturesSection games={games} />
         <ContentSection games={games} />
         <CommunitySection games={games} />
-        <EventsSection />
         <CTASection games={games} />
+        <EsportsSection games={games} />
       </div>
     </div>
   );
@@ -261,7 +259,7 @@ function HeroSection({ games }: { games: GameCover[] }) {
         className="absolute top-1/4 left-1/3 w-[700px] h-[700px] rounded-full blur-[200px] pointer-events-none"
         style={{
           y: blobY,
-          background: 'radial-gradient(circle, rgba(204,255,0,0.08) 0%, rgba(99,102,241,0.06) 50%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(204,255,0,0.08) 0%, rgba(45,212,191,0.06) 50%, transparent 70%)',
         }}
         aria-hidden="true"
       />
@@ -346,9 +344,9 @@ function HeroSection({ games }: { games: GameCover[] }) {
               </span>
             </span>
             <br />
-            <span className="text-white">Find Your </span>
+            <span className="text-white">Express Your </span>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo to-acid">
-              Twin.
+              Taste.
             </span>
           </motion.h1>
 
@@ -358,8 +356,8 @@ function HeroSection({ games }: { games: GameCover[] }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6, ease: [0.4, 0, 0.2, 1] }}
           >
-            Track games. Rate honestly. Find gamers who think exactly like you.
-            Built for people who actually care about games.
+            Track games. Rate honestly. Connect with gamers who get it.
+            Your gaming identity, all in one place.
           </motion.p>
 
           <motion.div
@@ -373,7 +371,7 @@ function HeroSection({ games }: { games: GameCover[] }) {
               className="group px-8 py-4 liquid-button text-surface font-bold text-lg rounded-lg"
             >
               <span className="flex items-center justify-center gap-2">
-                Start Playing
+                Get Started
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
               </span>
             </Link>
@@ -441,7 +439,7 @@ function StatsSection({ games }: { games: GameCover[] }) {
           {/* Stat 2: Active Community */}
           <motion.div className="group" variants={fadeUp}>
             <div className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-white/20 mb-3">Active Players</div>
-            <div className="text-5xl md:text-6xl font-black font-[family-name:var(--font-mono)] text-acid mb-3 tabular-nums">
+            <div className="text-5xl md:text-6xl font-black font-[family-name:var(--font-mono)] text-indigo mb-3 tabular-nums">
               <CountUp end={2547} />
             </div>
             <div className="text-white/30 mb-4 text-sm">Community members</div>
@@ -451,7 +449,7 @@ function StatsSection({ games }: { games: GameCover[] }) {
                   <div
                     key={letter}
                     className={`w-8 h-8 rounded-full border border-line flex items-center justify-center text-xs font-bold text-white flex-shrink-0 bg-gradient-to-br ${
-                      ['from-indigo to-acid/50', 'from-acid/60 to-indigo/60', 'from-peach to-rose', 'from-indigo to-peach', 'from-acid/50 to-indigo'][i]
+                      ['from-acid/40 to-acid/20', 'from-indigo/50 to-indigo/25', 'from-acid/30 to-indigo/20', 'from-indigo/40 to-acid/20', 'from-acid/35 to-acid/15'][i]
                     }`}
                     style={{ zIndex: 5 - i }}
                   >
@@ -469,17 +467,17 @@ function StatsSection({ games }: { games: GameCover[] }) {
           {/* Stat 3: Ratings */}
           <motion.div className="group" variants={fadeUp}>
             <div className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-white/20 mb-3">Community Ratings</div>
-            <div className="text-5xl md:text-6xl font-black font-[family-name:var(--font-mono)] text-indigo mb-3 tabular-nums">
+            <div className="text-5xl md:text-6xl font-black font-[family-name:var(--font-mono)] text-white mb-3 tabular-nums">
               <CountUp end={15234} />
             </div>
             <div className="text-white/30 mb-4 text-sm">Honest scores logged</div>
             <div className="space-y-1.5">
               {[
                 { stars: 10, pct: 24, color: 'from-acid to-acid/40' },
-                { stars: 8, pct: 38, color: 'from-indigo to-indigo/40' },
-                { stars: 6, pct: 22, color: 'from-peach to-peach/40' },
-                { stars: 4, pct: 12, color: 'from-rose to-rose/40' },
-                { stars: 2, pct: 4, color: 'from-white/20 to-white/5' },
+                { stars: 8, pct: 38, color: 'from-indigo to-indigo/30' },
+                { stars: 6, pct: 22, color: 'from-indigo/50 to-indigo/20' },
+                { stars: 4, pct: 12, color: 'from-white/20 to-white/5' },
+                { stars: 2, pct: 4, color: 'from-white/15 to-white/5' },
               ].map(r => (
                 <div key={r.stars} className="flex items-center gap-2">
                   <span className="text-[10px] text-white/20 font-[family-name:var(--font-mono)] w-4 text-right">{r.stars}</span>
@@ -505,65 +503,16 @@ function StatsSection({ games }: { games: GameCover[] }) {
 }
 
 /* ================================================================
-   BLYZA ECOSYSTEM STRIP
-   ================================================================ */
-function EcosystemStrip() {
-  return (
-    <motion.section
-      className="py-5 border-b border-line"
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={viewportOnce}
-      transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div className="flex items-center gap-3">
-            <Gamepad2 size={24} className="text-acid" />
-            <div>
-              <div className="text-[9px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-white/20">Part of</div>
-              <div className="font-bold text-white text-sm font-[family-name:var(--font-display)]">Blyza Entertainment</div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 sm:gap-6">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500">
-              <div className="w-7 h-7 rounded bg-gradient-to-br from-peach to-rose flex items-center justify-center">
-                <Dice5 size={14} className="text-white" />
-              </div>
-              <div className="hidden sm:block">
-                <div className="text-xs font-semibold text-white">PlayBlyza</div>
-                <div className="text-[9px] text-white/20">Party Games</div>
-              </div>
-            </div>
-            <div className="w-px h-6 bg-line" />
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500">
-              <div className="w-7 h-7 rounded bg-gradient-to-br from-indigo to-indigo/60 flex items-center justify-center">
-                <Trophy size={14} className="text-white" />
-              </div>
-              <div className="hidden sm:block">
-                <div className="text-xs font-semibold text-white">Blyza Live</div>
-                <div className="text-[9px] text-acid">Coming Soon</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </motion.section>
-  );
-}
-
-/* ================================================================
    FEATURES -- Asymmetric bento with glass-slab cards
    ================================================================ */
 function FeaturesSection({ games }: { games: GameCover[] }) {
   return (
-    <section className="py-20 sm:py-28 relative">
+    <section className="py-14 sm:py-20 relative">
       <AtmosphericFog />
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
         {/* Heading */}
         <motion.div
-          className="mb-14"
+          className="mb-10"
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
@@ -612,7 +561,7 @@ function FeaturesSection({ games }: { games: GameCover[] }) {
                   <div
                     className="w-full h-full rounded-full"
                     style={{
-                      background: 'conic-gradient(#CCFF00 0deg 169deg, #6366F1 169deg 270deg, #FF9F7C 270deg 324deg, #F472B6 324deg 360deg)',
+                      background: 'conic-gradient(#CCFF00 0deg 169deg, #2dd4bf 169deg 270deg, rgba(45,212,191,0.4) 270deg 324deg, rgba(255,255,255,0.1) 324deg 360deg)',
                       mask: 'radial-gradient(circle, transparent 62%, black 64%)',
                       WebkitMask: 'radial-gradient(circle, transparent 62%, black 64%)',
                     }}
@@ -628,8 +577,8 @@ function FeaturesSection({ games }: { games: GameCover[] }) {
                   {[
                     { name: 'Souls-like', pct: 47, dot: 'bg-acid', bar: 'from-acid to-acid/30' },
                     { name: 'RPG', pct: 28, dot: 'bg-indigo', bar: 'from-indigo to-indigo/30' },
-                    { name: 'Roguelike', pct: 15, dot: 'bg-peach', bar: 'from-peach to-peach/30' },
-                    { name: 'Platformer', pct: 10, dot: 'bg-rose', bar: 'from-rose to-rose/30' },
+                    { name: 'Roguelike', pct: 15, dot: 'bg-indigo/50', bar: 'from-indigo/40 to-indigo/15' },
+                    { name: 'Platformer', pct: 10, dot: 'bg-white/25', bar: 'from-white/20 to-white/5' },
                   ].map(g => (
                     <div key={g.name}>
                       <div className="flex items-center justify-between mb-1">
@@ -652,6 +601,35 @@ function FeaturesSection({ games }: { games: GameCover[] }) {
                   ))}
                 </div>
               </div>
+
+              {/* Recent activity with game covers */}
+              <div className="mt-6 pt-5 border-t border-line">
+                <div className="text-[9px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-white/15 mb-3">Recent Activity</div>
+                <div className="space-y-2.5">
+                  {[
+                    { game: 'Elden Ring', action: 'Completed', hours: '126h', poster: '/eldenposter.webp', color: 'text-acid' },
+                    { game: 'Cyberpunk 2077', action: 'Playing', hours: '34h', poster: '/cyberposter.jpg', color: 'text-indigo' },
+                    { game: 'Zelda: TotK', action: 'Rated 9.5', hours: '18h', poster: '/zeldaposter.jpg', color: 'text-acid' },
+                  ].map(item => (
+                    <div key={item.game} className="flex items-center gap-3 px-3 py-2 bg-white/[0.02] rounded-lg">
+                      <div className="w-8 h-10 rounded overflow-hidden flex-shrink-0 border border-line">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={item.poster} alt="" className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-xs font-semibold text-white/60 block truncate">{item.game}</span>
+                        <span className={`text-[10px] ${item.color}/60`}>{item.action}</span>
+                      </div>
+                      <span className="text-[10px] text-white/20 font-[family-name:var(--font-mono)]">{item.hours}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-3 flex items-center gap-4 text-[10px] text-white/20 font-[family-name:var(--font-mono)]">
+                  <span className="flex items-center gap-1"><Flame size={10} className="text-peach" /> 12 day streak</span>
+                  <span className="flex items-center gap-1"><Star size={10} className="text-acid" /> 47 rated</span>
+                  <span className="flex items-center gap-1"><Gamepad2 size={10} className="text-indigo" /> 1,240h</span>
+                </div>
+              </div>
             </div>
             <div className="absolute -bottom-16 -right-16 w-56 h-56 rounded-full bg-acid/[0.03] blur-3xl" />
           </motion.div>
@@ -669,7 +647,7 @@ function FeaturesSection({ games }: { games: GameCover[] }) {
 
               <div className="flex items-center justify-center gap-4 sm:gap-6">
                 <div className="text-center">
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-indigo to-acid/50 flex items-center justify-center text-lg font-black text-white mx-auto ring-1 ring-indigo/30">A</div>
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-acid/50 to-indigo/30 flex items-center justify-center text-lg font-black text-white mx-auto ring-1 ring-acid/20">A</div>
                   <span className="text-[10px] text-white/20 mt-1 block font-[family-name:var(--font-mono)]">You</span>
                 </div>
                 <div className="flex flex-col items-center">
@@ -684,7 +662,7 @@ function FeaturesSection({ games }: { games: GameCover[] }) {
                   <span className="text-[9px] text-white/15 font-[family-name:var(--font-mono)]">MATCH</span>
                 </div>
                 <div className="text-center">
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-acid/60 to-indigo/60 flex items-center justify-center text-lg font-black text-white mx-auto ring-1 ring-acid/20">S</div>
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-indigo/50 to-acid/30 flex items-center justify-center text-lg font-black text-white mx-auto ring-1 ring-indigo/20">S</div>
                   <span className="text-[10px] text-white/20 mt-1 block font-[family-name:var(--font-mono)]">Sara K.</span>
                 </div>
               </div>
@@ -766,11 +744,11 @@ function FeaturesSection({ games }: { games: GameCover[] }) {
 
               <div className="space-y-2">
                 {[
-                  { tier: 'S', bg: 'bg-gradient-to-r from-rose to-peach', n: 2, start: 0 },
-                  { tier: 'A', bg: 'bg-gradient-to-r from-acid to-acid/60', n: 3, start: 2 },
-                  { tier: 'B', bg: 'bg-gradient-to-r from-indigo to-indigo/60', n: 3, start: 5 },
-                  { tier: 'C', bg: 'bg-gradient-to-r from-peach to-peach/60', n: 2, start: 8 },
-                  { tier: 'D', bg: 'bg-gradient-to-r from-white/20 to-white/10', n: 1, start: 10 },
+                  { tier: 'S', bg: 'bg-gradient-to-r from-acid to-acid/80', n: 2, start: 0 },
+                  { tier: 'A', bg: 'bg-acid/60', n: 3, start: 2 },
+                  { tier: 'B', bg: 'bg-indigo/60', n: 3, start: 5 },
+                  { tier: 'C', bg: 'bg-indigo/30', n: 2, start: 8 },
+                  { tier: 'D', bg: 'bg-white/15', n: 1, start: 10 },
                 ].map((row, ri) => (
                   <motion.div
                     key={row.tier}
@@ -860,12 +838,12 @@ function FeaturesSection({ games }: { games: GameCover[] }) {
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-1">
                 <div>
-                  <div className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-acid/50 mb-2">Indie Discovery</div>
-                  <h3 className="text-lg font-bold text-white mb-1 font-[family-name:var(--font-display)]">10,000+ indie games</h3>
+                  <div className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-acid/50 mb-2">Game Discovery</div>
+                  <h3 className="text-lg font-bold text-white mb-1 font-[family-name:var(--font-display)]">10,000+ games to explore</h3>
                 </div>
                 <span className="text-xs text-acid font-[family-name:var(--font-mono)] px-3 py-1 bg-acid/[0.06] rounded-full border border-acid/10">Explore</span>
               </div>
-              <p className="text-white/30 text-xs mb-4">Hidden gems, honest reviews, independent developers</p>
+              <p className="text-white/30 text-xs mb-4">AAA blockbusters, cult classics, fresh releases — all rated by real players</p>
 
               <div className="flex gap-3 overflow-hidden">
                 {(games.length > 0 ? games.slice(0, 8) : []).map((game, i) => (
@@ -880,11 +858,6 @@ function FeaturesSection({ games }: { games: GameCover[] }) {
                         loading="lazy"
                       />
                     </div>
-                    {i % 3 === 0 && (
-                      <div className="absolute top-1 left-1 px-1.5 py-0.5 bg-acid rounded text-[8px] font-bold text-surface">
-                        HIDDEN GEM
-                      </div>
-                    )}
                     {game.average_rating > 0 && (
                       <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-1.5 rounded-b-lg">
                         <div className="flex items-center gap-0.5 justify-center">
@@ -902,7 +875,7 @@ function FeaturesSection({ games }: { games: GameCover[] }) {
 
         {/* CTA under bento */}
         <motion.div
-          className="mt-14 text-center"
+          className="mt-10 text-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={viewportOnce}
@@ -926,18 +899,18 @@ function FeaturesSection({ games }: { games: GameCover[] }) {
    ================================================================ */
 function ContentSection({ games }: { games: GameCover[] }) {
   const videoMockups = [
-    { title: 'This Indie Game Will Blow Your Mind', views: '12K', duration: '14:22', isNew: true },
-    { title: 'Top 10 Roguelikes You NEED to Play', views: '8.5K', duration: '18:45', isNew: true },
-    { title: 'Why Hollow Knight is a Masterpiece', views: '15K', duration: '22:10', isNew: false },
-    { title: 'Hades vs Dead Cells - The Ultimate Comparison', views: '9.2K', duration: '11:33', isNew: false },
+    { title: 'Why This Game Deserves a 10/10', views: '12K', duration: '14:22', isNew: true },
+    { title: 'Top 10 Games You NEED to Play in 2026', views: '8.5K', duration: '18:45', isNew: true },
+    { title: 'Why Elden Ring Changed Gaming Forever', views: '15K', duration: '22:10', isNew: false },
+    { title: 'Hades vs Dead Cells — The Ultimate Comparison', views: '9.2K', duration: '11:33', isNew: false },
   ];
 
   return (
-    <section className="py-20 sm:py-28 relative overflow-hidden">
+    <section className="py-14 sm:py-20 relative overflow-hidden">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-line to-transparent" />
       <AtmosphericFog variant="warm" />
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-start">
+        <div className="grid md:grid-cols-2 gap-10 lg:gap-14 items-start">
           {/* Left: Description */}
           <motion.div
             initial="hidden"
@@ -945,7 +918,7 @@ function ContentSection({ games }: { games: GameCover[] }) {
             viewport={viewportOnce}
             variants={slideRight}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-peach/[0.06] border border-peach/20 rounded-full text-peach text-xs font-[family-name:var(--font-mono)] tracking-wider mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-peach/[0.06] border border-peach/15 rounded-full text-peach/80 text-xs font-[family-name:var(--font-mono)] tracking-wider mb-6">
               <Tv size={14} />
               GAMING MEDIA BRAND
             </div>
@@ -955,22 +928,22 @@ function ContentSection({ games }: { games: GameCover[] }) {
               <br />
               Real opinions.
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-peach to-rose">
-                Indie focus.
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-peach to-acid">
+                Zero filter.
               </span>
             </h2>
 
             <p className="text-lg text-white/30 mb-8">
-              Daily content across YouTube, TikTok, Instagram, and JESTR.
-              Indie game reviews, developer interviews, and authentic coverage for MENA gamers.
+              Daily content across YouTube, TikTok, and Instagram.
+              Game reviews, industry news, reports, and real public opinions.
             </p>
 
             <div className="space-y-3 mb-8">
               {[
-                { Icon: Play, text: 'In-depth video reviews', color: 'text-red-400', bg: 'bg-red-500/[0.06] border-red-500/15' },
-                { Icon: Zap, text: '60-second TikTok takes', color: 'text-rose', bg: 'bg-rose/[0.06] border-rose/15' },
-                { Icon: Camera, text: 'Instagram reels & highlights', color: 'text-indigo', bg: 'bg-indigo/[0.06] border-indigo/15' },
-                { Icon: Swords, text: 'JESTR paid indie reviews', color: 'text-acid', bg: 'bg-acid/[0.06] border-acid/15' },
+                { Icon: Play, text: 'In-depth video reviews on YouTube', color: 'text-white/50', bg: 'bg-white/[0.04] border-white/10' },
+                { Icon: Zap, text: '60-second takes on TikTok', color: 'text-white/50', bg: 'bg-white/[0.04] border-white/10' },
+                { Icon: Camera, text: 'Reels & highlights on Instagram', color: 'text-white/50', bg: 'bg-white/[0.04] border-white/10' },
+                { Icon: MessageCircle, text: 'Game industry news & public opinions', color: 'text-white/50', bg: 'bg-white/[0.04] border-white/10' },
               ].map(p => (
                 <div key={p.text} className="flex items-center gap-3">
                   <div className={`w-9 h-9 ${p.bg} border rounded-lg flex items-center justify-center ${p.color}`}>
@@ -981,21 +954,28 @@ function ContentSection({ games }: { games: GameCover[] }) {
               ))}
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              {[
-                { label: 'YouTube', bg: 'bg-red-500/[0.08] border-red-500/20 text-red-400' },
-                { label: 'TikTok', bg: 'bg-rose/[0.08] border-rose/20 text-rose' },
-                { label: 'Instagram', bg: 'bg-indigo/[0.08] border-indigo/20 text-indigo' },
-                { label: 'JESTR', bg: 'bg-acid/[0.08] border-acid/20 text-acid' },
-              ].map(s => (
-                <span key={s.label} className={`px-3 py-1 ${s.bg} border rounded-full text-xs font-[family-name:var(--font-mono)]`}>{s.label}</span>
-              ))}
+            <div className="flex flex-wrap gap-3">
+              <a href="https://youtube.com/@jeggy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2.5 px-5 py-2.5 bg-white/[0.04] border border-white/10 text-white/70 rounded-full text-sm font-semibold hover:bg-white/[0.08] transition-colors duration-300">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/Youtube_logo (1).png" alt="YouTube" className="w-5 h-5 object-contain" />
+                YouTube
+              </a>
+              <a href="https://tiktok.com/@jeggy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2.5 px-5 py-2.5 bg-white/[0.04] border border-white/10 text-white/70 rounded-full text-sm font-semibold hover:bg-white/[0.08] transition-colors duration-300">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/tiktoklogo.webp" alt="TikTok" className="w-5 h-5 object-contain" />
+                TikTok
+              </a>
+              <a href="https://instagram.com/jeggy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2.5 px-5 py-2.5 bg-white/[0.04] border border-white/10 text-white/70 rounded-full text-sm font-semibold hover:bg-white/[0.08] transition-colors duration-300">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/Instagram_logo_2022.svg.png" alt="Instagram" className="w-5 h-5 object-contain" />
+                Instagram
+              </a>
             </div>
           </motion.div>
 
           {/* Right: Video thumbnails */}
           <motion.div
-            className="space-y-6"
+            className="space-y-5"
             initial="hidden"
             whileInView="visible"
             viewport={viewportOnce}
@@ -1067,11 +1047,11 @@ function ContentSection({ games }: { games: GameCover[] }) {
 
             <div className="glass-slab rounded-xl p-4 flex items-center justify-between">
               <div>
-                <div className="text-2xl font-black text-peach font-[family-name:var(--font-mono)]">100+</div>
-                <div className="text-xs text-white/20">Indie Reviews Published</div>
+                <div className="text-2xl font-black text-acid font-[family-name:var(--font-mono)]">100+</div>
+                <div className="text-xs text-white/20">Reviews Published</div>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-black text-rose font-[family-name:var(--font-mono)]">Daily</div>
+                <div className="text-2xl font-black text-indigo font-[family-name:var(--font-mono)]">Daily</div>
                 <div className="text-xs text-white/20">New Content</div>
               </div>
             </div>
@@ -1084,15 +1064,111 @@ function ContentSection({ games }: { games: GameCover[] }) {
 }
 
 /* ================================================================
+   ESPORTS -- Live tournament hosting (Coming Soon)
+   ================================================================ */
+function EsportsSection({ games }: { games: GameCover[] }) {
+  return (
+    <section className="py-20 sm:py-28 relative overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-line to-transparent" />
+
+      {/* Background: game cover mosaic */}
+      {games.length > 0 && (
+        <div className="absolute inset-0 opacity-[0.06]" aria-hidden="true">
+          <div className="grid grid-cols-6 sm:grid-cols-8 gap-1 h-full" style={{ transform: 'scale(1.15) rotate(-2deg)' }}>
+            {[...games, ...games].slice(0, 48).map((g, i) => (
+              <div key={`es-${g.id}-${i}`} className="aspect-[3/4] rounded overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={g.cover_url.replace('t_cover_big', 't_thumb')} alt="" className="w-full h-full object-cover" loading="lazy" />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      <div className="absolute inset-0 bg-gradient-to-b from-surface via-surface/95 to-surface" />
+
+      <AtmosphericFog variant="indigo" />
+
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={stagger}
+        >
+          <motion.div variants={fadeUp}>
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo/10 border border-indigo/20 rounded-full text-indigo text-xs font-[family-name:var(--font-mono)] tracking-wider mb-8">
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo animate-pulse" />
+              COMING SOON
+            </span>
+          </motion.div>
+
+          <motion.h2
+            className="text-5xl md:text-7xl font-black text-white mb-6 leading-[0.95] font-[family-name:var(--font-display)]"
+            style={{ letterSpacing: '-0.04em' }}
+            variants={fadeUp}
+          >
+            Local Esports.
+            <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo to-acid">
+              Live Streamed.
+            </span>
+          </motion.h2>
+
+          <motion.p
+            className="text-lg md:text-xl text-white/35 mb-12 max-w-2xl mx-auto leading-relaxed"
+            variants={fadeUp}
+          >
+            Community tournaments, live brackets, and real-time streaming — all on Jeggy.
+            Your gaming dream, from signup to grand finals.
+          </motion.p>
+
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12 max-w-3xl mx-auto"
+            variants={stagger}
+          >
+            {[
+              { title: 'Host Tournaments', desc: 'Create brackets, set rules, invite players', icon: Gamepad2, color: 'text-acid', bg: 'bg-acid/[0.06] border-acid/15' },
+              { title: 'Stream Live', desc: 'Built-in streaming and spectator mode', icon: Play, color: 'text-indigo', bg: 'bg-indigo/[0.06] border-indigo/15' },
+              { title: 'Climb Ranks', desc: 'Leaderboards, stats, and community glory', icon: Flame, color: 'text-peach', bg: 'bg-peach/[0.06] border-peach/15' },
+            ].map(item => (
+              <motion.div
+                key={item.title}
+                className="glass-slab rounded-2xl p-6 text-center group hover:border-white/10"
+                variants={fadeUp}
+              >
+                <div className={`w-12 h-12 ${item.bg} border rounded-xl flex items-center justify-center ${item.color} mx-auto mb-4`}>
+                  <item.icon size={22} />
+                </div>
+                <h3 className="text-base font-bold text-white mb-1 font-[family-name:var(--font-display)]">{item.title}</h3>
+                <p className="text-xs text-white/25">{item.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <motion.div variants={fadeUp}>
+            <div className="inline-flex items-center gap-3 px-6 py-3 glass-slab rounded-full">
+              <div className="w-2 h-2 rounded-full bg-indigo animate-pulse" />
+              <span className="text-sm text-white/40 font-[family-name:var(--font-mono)]">
+                Tournament platform launching soon — stay tuned
+              </span>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+/* ================================================================
    COMMUNITY -- social feed with blurred avatars + timestamps
    ================================================================ */
 function CommunitySection({ games }: { games: GameCover[] }) {
   const activities = useMemo(() => {
     const names = ['Ahmed M.', 'Sara K.', 'Omar H.', 'Layla A.', 'Khalid R.', 'Noor B.', 'Youssef T.', 'Fatima Z.', 'Hassan D.', 'Maryam J.'];
     const gradients = [
-      'from-indigo to-acid/50', 'from-acid/60 to-indigo/60',
-      'from-peach to-rose', 'from-indigo to-peach',
-      'from-acid/50 to-indigo',
+      'from-acid/40 to-indigo/30', 'from-indigo/50 to-acid/30',
+      'from-acid/30 to-acid/15', 'from-indigo/40 to-indigo/20',
+      'from-acid/35 to-indigo/25',
     ];
     if (games.length === 0) return [];
 
@@ -1117,11 +1193,11 @@ function CommunitySection({ games }: { games: GameCover[] }) {
   }, [games]);
 
   return (
-    <section className="py-20 sm:py-28 relative overflow-hidden">
+    <section className="py-14 sm:py-20 relative overflow-hidden">
       <AtmosphericFog variant="indigo" />
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
-          className="flex items-end gap-4 mb-12"
+          className="flex items-end gap-4 mb-10"
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
@@ -1181,9 +1257,9 @@ function CommunitySection({ games }: { games: GameCover[] }) {
               <div className="space-y-5">
                 {[
                   { label: 'Games Tracked', value: '10,247', color: 'text-acid', bar: 'from-acid to-acid/30', pct: 92 },
-                  { label: 'Ratings Given', value: '48,392', color: 'text-peach', bar: 'from-peach to-peach/30', pct: 78 },
-                  { label: 'Lists Created', value: '2,847', color: 'text-indigo', bar: 'from-indigo to-indigo/30', pct: 54 },
-                  { label: 'Reviews Written', value: '12,583', color: 'text-rose', bar: 'from-rose to-rose/30', pct: 65 },
+                  { label: 'Ratings Given', value: '48,392', color: 'text-indigo', bar: 'from-indigo to-indigo/30', pct: 78 },
+                  { label: 'Lists Created', value: '2,847', color: 'text-indigo/70', bar: 'from-indigo/50 to-indigo/15', pct: 54 },
+                  { label: 'Reviews Written', value: '12,583', color: 'text-acid/70', bar: 'from-acid/50 to-acid/15', pct: 65 },
                 ].map(s => (
                   <div key={s.label}>
                     <div className="flex items-center justify-between mb-1.5">
@@ -1223,127 +1299,11 @@ function CommunitySection({ games }: { games: GameCover[] }) {
 }
 
 /* ================================================================
-   EVENTS -- Blyza Live teaser
-   ================================================================ */
-function EventsSection() {
-  return (
-    <section className="py-20 sm:py-28 relative overflow-hidden">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-line to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo/[0.03] via-transparent to-rose/[0.03]" />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Visual */}
-          <motion.div
-            className="relative"
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewportOnce}
-            variants={scaleIn}
-          >
-            <div className="aspect-video glass-slab rounded-2xl overflow-hidden relative flex items-center justify-center">
-              <svg className="absolute inset-0 w-full h-full opacity-[0.03]" viewBox="0 0 400 250" fill="none">
-                <line x1="50" y1="40" x2="120" y2="40" stroke="white" strokeWidth="1" />
-                <line x1="50" y1="80" x2="120" y2="80" stroke="white" strokeWidth="1" />
-                <line x1="120" y1="40" x2="120" y2="80" stroke="white" strokeWidth="1" />
-                <line x1="120" y1="60" x2="200" y2="60" stroke="white" strokeWidth="1" />
-                <line x1="50" y1="140" x2="120" y2="140" stroke="white" strokeWidth="1" />
-                <line x1="50" y1="180" x2="120" y2="180" stroke="white" strokeWidth="1" />
-                <line x1="120" y1="140" x2="120" y2="180" stroke="white" strokeWidth="1" />
-                <line x1="120" y1="160" x2="200" y2="160" stroke="white" strokeWidth="1" />
-                <line x1="200" y1="60" x2="200" y2="160" stroke="white" strokeWidth="1" />
-                <line x1="200" y1="110" x2="280" y2="110" stroke="white" strokeWidth="1" />
-                <line x1="300" y1="40" x2="350" y2="40" stroke="white" strokeWidth="1" />
-                <line x1="300" y1="80" x2="350" y2="80" stroke="white" strokeWidth="1" />
-                <line x1="350" y1="40" x2="350" y2="80" stroke="white" strokeWidth="1" />
-                <line x1="300" y1="140" x2="350" y2="140" stroke="white" strokeWidth="1" />
-                <line x1="300" y1="180" x2="350" y2="180" stroke="white" strokeWidth="1" />
-                <line x1="350" y1="140" x2="350" y2="180" stroke="white" strokeWidth="1" />
-              </svg>
-              <div className="text-center relative z-10">
-                <div className="text-5xl sm:text-7xl font-black text-indigo tracking-tighter font-[family-name:var(--font-display)]" style={{ textShadow: '0 0 40px rgba(99,102,241,0.3)' }}>BLYZA</div>
-                <div className="text-3xl sm:text-5xl font-black text-rose -mt-2 font-[family-name:var(--font-display)]" style={{ textShadow: '0 0 40px rgba(244,114,182,0.3)' }}>LIVE</div>
-                <div className="mt-4 flex items-center justify-center gap-3 text-sm text-white/20">
-                  <span className="flex items-center gap-1"><Trophy size={14} /> Tournaments</span>
-                  <span>{'\u00B7'}</span>
-                  <span className="flex items-center gap-1"><Users size={14} /> Community</span>
-                  <span>{'\u00B7'}</span>
-                  <span className="flex items-center gap-1"><Monitor size={14} /> Streamed</span>
-                </div>
-              </div>
-              <div className="absolute top-0 left-1/4 w-48 h-48 bg-indigo/[0.06] rounded-full blur-3xl" />
-              <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-rose/[0.06] rounded-full blur-3xl" />
-            </div>
-            <div className="absolute top-4 right-4 rotate-12 px-4 py-2 bg-acid text-surface font-black text-sm uppercase tracking-wider rounded-sm hover:rotate-0 transition-transform duration-500">
-              Coming Soon
-            </div>
-          </motion.div>
-
-          {/* Content */}
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewportOnce}
-            variants={slideLeft}
-          >
-            <div className="inline-block px-3 py-1 bg-indigo/[0.08] border border-indigo/20 rounded-full text-indigo text-xs font-[family-name:var(--font-mono)] mb-6">
-              Q3 2026
-            </div>
-
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight font-[family-name:var(--font-display)]" style={{ letterSpacing: '-0.03em' }}>
-              Gaming events.
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo to-rose">
-                Real competition.
-              </span>
-            </h2>
-
-            <p className="text-lg text-white/30 mb-8">
-              Professional tournaments at gaming cafes and venues across UAE and MENA.
-              From weekly casuals to annual championships.
-            </p>
-
-            <div className="space-y-3 mb-8">
-              {[
-                { Icon: Calendar, text: 'Weekly cafe tournaments', color: 'text-acid' },
-                { Icon: Swords, text: 'Monthly championships with prizes', color: 'text-indigo' },
-                { Icon: Globe, text: 'Regional MENA events', color: 'text-rose' },
-                { Icon: Monitor, text: 'Professional streaming & content', color: 'text-peach' },
-              ].map(item => (
-                <div key={item.text} className="flex items-center gap-3">
-                  <item.Icon size={16} className={item.color} />
-                  <span className="text-white/40 text-sm">{item.text}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="glass-slab rounded-xl p-5 border-indigo/10">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-bold text-white font-[family-name:var(--font-display)]">Want early access?</h3>
-                <div className="text-2xl font-black text-indigo font-[family-name:var(--font-mono)]">Q3 2026</div>
-              </div>
-              <Link
-                href="/signup"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-indigo hover:bg-indigo/80 text-white font-bold rounded-lg transition-all duration-500 hover:shadow-[0_0_20px_rgba(99,102,241,0.25)]"
-              >
-                Get Notified
-                <ArrowRight size={16} />
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-line to-transparent" />
-    </section>
-  );
-}
-
-/* ================================================================
    CTA -- final conversion with liquid button
    ================================================================ */
 function CTASection({ games }: { games: GameCover[] }) {
   return (
-    <section className="py-20 sm:py-28 relative overflow-hidden">
+    <section className="py-14 sm:py-20 relative overflow-hidden">
       {games.length > 0 && (
         <div className="absolute inset-0 opacity-[0.05]" aria-hidden="true">
           <div className="grid grid-cols-6 sm:grid-cols-8 gap-1 h-full" style={{ transform: 'scale(1.1) rotate(3deg)' }}>

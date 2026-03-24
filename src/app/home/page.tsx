@@ -373,7 +373,7 @@ function LoggedInHome({ userId }: { userId: string }) {
                   { val: stats.gamesRated, label: 'Games Rated', icon: <Star size={16} />, color: 'text-accent-orange', bg: 'bg-accent-orange/10' },
                   { val: `${stats.hoursPlayed}h`, label: 'This Month', icon: <Clock size={16} />, color: 'text-accent-teal', bg: 'bg-accent-teal/10' },
                   { val: stats.listsCreated, label: 'Lists', icon: <ListOrdered size={16} />, color: 'text-accent-green', bg: 'bg-accent-green/10' },
-                  { val: stats.reviewsWritten, label: 'Reviews', icon: <MessageCircle size={16} />, color: 'text-purple-400', bg: 'bg-purple-400/10' },
+                  { val: stats.reviewsWritten, label: 'Reviews', icon: <MessageCircle size={16} />, color: 'text-accent-teal', bg: 'bg-accent-teal/10' },
                 ].map((s) => (
                   <div key={s.label} className={`${s.bg} rounded-sm p-4 text-center transition-transform hover:scale-[1.02]`}>
                     <div className={`inline-flex items-center justify-center ${s.color} mb-2`}>{s.icon}</div>

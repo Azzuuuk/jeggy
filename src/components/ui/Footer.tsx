@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Gamepad2 } from 'lucide-react';
 
 const exploreLinks = [
   { label: 'Browse Games', href: '/games' },
@@ -16,8 +15,8 @@ const communityLinks = [
 const aboutLinks = [
   { label: 'About Jeggy', href: '/about' },
   { label: 'Settings', href: '/settings' },
-  { label: 'Privacy', href: '#' },
-  { label: 'Terms', href: '#' },
+  { label: 'Privacy', href: '/privacy' },
+  { label: 'Terms', href: '/terms' },
 ];
 
 function FooterColumn({ heading, links }: { heading: string; links: { label: string; href: string }[] }) {
@@ -44,8 +43,9 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2 mb-3">
-              <Gamepad2 className="w-6 h-6 text-accent-orange" />
+            <div className="flex items-center -space-x-0.5 mb-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/JeggyLogo.png" alt="Jeggy" className="h-9 w-auto" />
               <span className="text-lg font-bold text-text-primary font-[family-name:var(--font-display)]">Jeggy</span>
             </div>
             <p className="text-sm text-text-muted">
