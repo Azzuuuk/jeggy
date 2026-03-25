@@ -230,7 +230,7 @@ export default function BrowseListsPage() {
             <p className="text-text-secondary text-sm mb-6">
               {searchQuery ? 'Try adjusting your search.' : 'Make a tier list, rank your favorites, drop your hot takes'}
             </p>
-            {!searchQuery && (
+            {!searchQuery && user && (
               <Link href="/lists/create" className="inline-block px-6 py-3 bg-accent-green hover:bg-accent-green-hover text-black rounded-sm font-semibold transition-all duration-300">
                 ✨ Create Your First List
               </Link>

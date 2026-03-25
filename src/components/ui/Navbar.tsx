@@ -10,12 +10,16 @@ import { NotificationsBell } from './NotificationsBell';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
 
-const navLinks = [
+const guestNavLinks = [
   { href: '/discover', label: 'DISCOVER' },
   { href: '/games', label: 'GAMES' },
   { href: '/lists', label: 'LISTS' },
-  { href: '/diary', label: 'DIARY' },
   { href: '/feed', label: 'FEED' },
+];
+
+const navLinks = [
+  ...guestNavLinks,
+  { href: '/diary', label: 'DIARY' },
 ];
 
 export default function Navbar() {
@@ -27,6 +31,8 @@ export default function Navbar() {
   const { profile } = useProfile(user?.id);
 
   const profileUrl = profile ? `/profile/${profile.username}` : '/login';
+
+  const isLanding = !user && pathname === '/';
 
   const handleSignOut = async () => {
     await signOut();
@@ -47,10 +53,10 @@ export default function Navbar() {
               </span>
             </Link>
 
-            {/* Desktop nav links — only for logged-in users */}
-            {user && (
+            {/* Desktop nav links */}
+            {!isLanding && (
               <div className="hidden md:flex items-center gap-1">
-                {navLinks.map(link => {
+                {(user ? navLinks : guestNavLinks).map(link => {
                   const isActive = pathname === link.href || pathname.startsWith(link.href + '/');
                   return (
                     <Link
@@ -69,13 +75,14 @@ export default function Navbar() {
               </div>
             )}
 
-            {/* Search bar - desktop, only for logged-in users */}
-            {user && (
+            {/* Search bar - desktop */}
+            {!isLanding ? (
               <div className="hidden md:block flex-1 max-w-xs">
                 <SearchAutocomplete compact />
               </div>
+            ) : (
+              <div className="flex-1" />
             )}
-            {!user && <div className="flex-1" />}
 
             {/* Desktop actions */}
             <div className="hidden md:flex items-center gap-3">
@@ -144,9 +151,9 @@ export default function Navbar() {
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-border bg-bg-primary/95 backdrop-blur-xl">
             <div className="px-4 py-4 space-y-3">
-              {user && <SearchAutocomplete compact />}
+              {!isLanding && <SearchAutocomplete compact />}
               <div className="space-y-1 pt-2">
-                {user && navLinks.map(link => (
+                {!isLanding && (user ? navLinks : guestNavLinks).map(link => (
                   <Link
                     key={link.href}
                     href={link.href}

@@ -1343,10 +1343,10 @@ function CTASection({ games }: { games: GameCover[] }) {
             </span>
           </Link>
           <Link
-            href="/login"
+            href="/games"
             className="px-10 py-5 border border-line text-white/60 font-bold text-xl rounded-lg hover:bg-white/[0.03] hover:border-white/10 transition-all duration-500 text-center"
           >
-            Log In
+            Explore as Guest
           </Link>
         </div>
 

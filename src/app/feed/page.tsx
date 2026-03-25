@@ -213,6 +213,7 @@ export default function FeedPage() {
       </div>
 
       {/* Tab Toggle */}
+      {user && (
       <div className="max-w-3xl mx-auto px-4 mb-4">
         <div className="flex bg-bg-card/80 backdrop-blur-xl border border-border rounded-sm p-1">
           <button
@@ -239,6 +240,7 @@ export default function FeedPage() {
           </button>
         </div>
       </div>
+      )}
 
       {/* Filter Pills */}
       <div className="max-w-3xl mx-auto px-4 mb-6">

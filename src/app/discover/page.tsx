@@ -442,49 +442,59 @@ export default function DiscoverPage() {
   );
 }
 
-function GamerCard({ user, badge }: { user: DiscoverUser | SimilarUser; badge: React.ReactNode }) {
-  const { isFollowing, toggleFollow, loading } = useFollow(user.id);
+function GamerCard({ user: cardUser, badge }: { user: DiscoverUser | SimilarUser; badge: React.ReactNode }) {
+  const { user: authUser } = useAuth();
+  const { isFollowing, toggleFollow, loading } = useFollow(cardUser.id);
 
   return (
     <div className="bg-bg-card/80 backdrop-blur-xl border border-border rounded-sm p-5 hover:border-border-light transition-all duration-300">
       <div className="flex items-start justify-between mb-3">
-        <Link href={`/profile/${user.username}`} className="flex items-center gap-3 min-w-0">
-          {user.avatar_url ? (
+        <Link href={`/profile/${cardUser.username}`} className="flex items-center gap-3 min-w-0">
+          {cardUser.avatar_url ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={user.avatar_url} alt={user.username} className="w-11 h-11 rounded-full object-cover flex-shrink-0" />
+            <img src={cardUser.avatar_url} alt={cardUser.username} className="w-11 h-11 rounded-full object-cover flex-shrink-0" />
           ) : (
             <div className="w-11 h-11 rounded-full bg-gradient-to-br from-accent-green to-accent-teal flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
-              {(user.display_name || user.username).charAt(0).toUpperCase()}
+              {(cardUser.display_name || cardUser.username).charAt(0).toUpperCase()}
             </div>
           )}
           <div className="min-w-0">
             <div className="font-semibold text-text-primary hover:text-accent-green transition-all duration-300 truncate">
-              {user.display_name || user.username}
+              {cardUser.display_name || cardUser.username}
             </div>
-            <div className="text-xs text-text-muted">@{user.username}</div>
+            <div className="text-xs text-text-muted">@{cardUser.username}</div>
           </div>
         </Link>
-        <button
-          onClick={toggleFollow}
-          disabled={loading}
-          className={`px-3.5 py-1.5 rounded-sm text-xs font-semibold transition-all duration-300 flex-shrink-0 ${
-            isFollowing
-              ? 'bg-bg-elevated border border-border text-text-secondary hover:text-red-400 hover:border-red-400/30'
-              : 'bg-accent-green text-black hover:opacity-90'
-          }`}
-        >
-          {isFollowing ? 'Following' : 'Follow'}
-        </button>
+        {authUser ? (
+          <button
+            onClick={toggleFollow}
+            disabled={loading}
+            className={`px-3.5 py-1.5 rounded-sm text-xs font-semibold transition-all duration-300 flex-shrink-0 ${
+              isFollowing
+                ? 'bg-bg-elevated border border-border text-text-secondary hover:text-red-400 hover:border-red-400/30'
+                : 'bg-accent-green text-black hover:opacity-90'
+            }`}
+          >
+            {isFollowing ? 'Following' : 'Follow'}
+          </button>
+        ) : (
+          <Link
+            href="/login"
+            className="px-3.5 py-1.5 rounded-sm text-xs font-semibold bg-accent-green text-black hover:opacity-90 transition-all duration-300 flex-shrink-0"
+          >
+            Follow
+          </Link>
+        )}
       </div>
 
-      {user.bio && (
-        <p className="text-xs text-text-secondary mb-3 line-clamp-2">{user.bio}</p>
+      {cardUser.bio && (
+        <p className="text-xs text-text-secondary mb-3 line-clamp-2">{cardUser.bio}</p>
       )}
 
       {/* Top games preview */}
-      {user.top_games.length > 0 && (
+      {cardUser.top_games.length > 0 && (
         <div className="flex items-center gap-1.5 mb-3">
-          {user.top_games.map((g, i) => (
+          {cardUser.top_games.map((g, i) => (
             <div key={i} className="w-8 h-11 rounded overflow-hidden bg-bg-elevated flex-shrink-0" title={g.name}>
               {g.cover_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -494,7 +504,7 @@ function GamerCard({ user, badge }: { user: DiscoverUser | SimilarUser; badge: R
               )}
             </div>
           ))}
-          <span className="text-xs text-text-muted ml-1">{user.games_count} games rated</span>
+          <span className="text-xs text-text-muted ml-1">{cardUser.games_count} games rated</span>
         </div>
       )}
 

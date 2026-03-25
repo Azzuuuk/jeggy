@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Gamepad2, Plus, List, BookOpen, User, LogIn } from 'lucide-react';
+import { Gamepad2, Plus, List, BookOpen, User, LogIn, Search } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
 import AddMenu from './AddMenu';
@@ -15,20 +15,25 @@ export default function MobileNav() {
   const { profile } = useProfile(user?.id);
   const [addMenuOpen, setAddMenuOpen] = useState(false);
 
-  // Hide mobile nav for logged-out users
-  if (!user) return null;
-
   const profileUrl = profile ? `/profile/${profile.username}` : '/login';
 
-  const navItems = [
-    { label: 'Games', href: '/games', icon: Gamepad2 },
-    { label: 'Lists', href: '/lists', icon: List },
-    { label: 'Add', href: '#', icon: Plus, isCenter: true },
-    { label: 'Diary', href: '/diary', icon: BookOpen },
-    user
-      ? { label: 'Profile', href: profileUrl, icon: User }
-      : { label: 'Log In', href: '/login', icon: LogIn },
-  ];
+  // Hide on landing page (has its own layout)
+  if (!user && pathname === '/') return null;
+
+  const navItems = user
+    ? [
+        { label: 'Games', href: '/games', icon: Gamepad2 },
+        { label: 'Lists', href: '/lists', icon: List },
+        { label: 'Add', href: '#', icon: Plus, isCenter: true },
+        { label: 'Diary', href: '/diary', icon: BookOpen },
+        { label: 'Profile', href: profileUrl, icon: User },
+      ]
+    : [
+        { label: 'Games', href: '/games', icon: Gamepad2 },
+        { label: 'Lists', href: '/lists', icon: List },
+        { label: 'Discover', href: '/discover', icon: Search },
+        { label: 'Log In', href: '/login', icon: LogIn },
+      ];
 
   return (
     <>

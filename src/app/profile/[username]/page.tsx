@@ -158,6 +158,7 @@ function RealProfile({
   setEditModalOpen: (open: boolean) => void;
   updateProfile: (updates: Partial<Profile>) => Promise<{ success: boolean; error?: string }>;
 }) {
+  const { user: authUser } = useAuth();
   const { stats, refetch: refetchStats } = useProfileStats(profile.id);
   const { isFollowing, followerCount, followingCount, loading: followLoading, toggleFollow } = useFollow(profile.id);
   const [activeTab, setActiveTab] = useState<Tab>('Games');
@@ -546,7 +547,7 @@ function RealProfile({
                 <PenLine size={14} />
                 Edit Profile
               </button>
-            ) : (
+            ) : authUser ? (
               <button
                 onClick={toggleFollow}
                 disabled={followLoading}
@@ -558,6 +559,13 @@ function RealProfile({
               >
                 {isFollowing ? <><UserCheck size={14} /> Following</> : <><UserPlus size={14} /> Follow</>}
               </button>
+            ) : (
+              <Link
+                href="/login"
+                className="px-5 py-2 rounded-sm font-medium text-sm bg-accent-green text-black hover:opacity-90 transition-all duration-300 flex items-center gap-2"
+              >
+                <UserPlus size={14} /> Follow
+              </Link>
             )}
             <button
               onClick={() => {
