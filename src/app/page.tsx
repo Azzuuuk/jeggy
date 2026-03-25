@@ -367,19 +367,19 @@ function HeroSection({ games }: { games: GameCover[] }) {
             transition={{ duration: 0.6, delay: 0.8, ease: [0.4, 0, 0.2, 1] }}
           >
             <Link
-              href="/signup"
+              href="/games"
               className="group px-8 py-4 liquid-button text-surface font-bold text-lg rounded-lg"
             >
               <span className="flex items-center justify-center gap-2">
-                Get Started
+                Explore Games
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
               </span>
             </Link>
             <Link
-              href="/games"
+              href="/signup"
               className="px-8 py-4 border border-line text-white/70 font-semibold text-lg rounded-lg hover:bg-white/[0.03] hover:border-white/10 transition-all duration-500 text-center"
             >
-              Browse 10,000+ Games
+              Create Account
             </Link>
           </motion.div>
         </div>
@@ -882,10 +882,10 @@ function FeaturesSection({ games }: { games: GameCover[] }) {
           transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
         >
           <Link
-            href="/signup"
+            href="/discover"
             className="inline-flex items-center gap-2 px-8 py-4 liquid-button text-surface font-bold text-lg rounded-lg"
           >
-            Try Everything Free
+            Start Exploring
             <ArrowRight size={18} />
           </Link>
         </motion.div>
@@ -1284,10 +1284,10 @@ function CommunitySection({ games }: { games: GameCover[] }) {
               <h3 className="text-2xl font-black text-white mb-2 font-[family-name:var(--font-display)]">Join the tribe</h3>
               <p className="text-sm text-white/25 mb-4">Find your gaming people</p>
               <Link
-                href="/signup"
+                href="/discover"
                 className="inline-flex items-center gap-2 px-6 py-3 liquid-button text-surface font-bold rounded-lg"
               >
-                Sign Up Free
+                Discover Gamers
                 <ArrowRight size={16} />
               </Link>
             </div>
@@ -1326,32 +1326,32 @@ function CTASection({ games }: { games: GameCover[] }) {
         variants={fadeUp}
       >
         <h2 className="text-5xl md:text-7xl font-black text-white mb-6 leading-[0.95] font-[family-name:var(--font-display)]" style={{ letterSpacing: '-0.04em' }}>
-          Ready to play?
+          See for yourself.
         </h2>
         <p className="text-xl text-white/30 mb-10 max-w-xl mx-auto">
-          Join the community. Track your games. Discover your taste. Find your people.
+          Browse games. Check out lists. See what the community thinks. No account needed.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
           <Link
-            href="/signup"
+            href="/games"
             className="group px-10 py-5 liquid-button text-surface font-black text-xl rounded-lg"
           >
             <span className="flex items-center justify-center gap-2">
-              START DISCOVERING
+              BROWSE GAMES
               <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform duration-300" />
             </span>
           </Link>
           <Link
-            href="/games"
+            href="/signup"
             className="px-10 py-5 border border-line text-white/60 font-bold text-xl rounded-lg hover:bg-white/[0.03] hover:border-white/10 transition-all duration-500 text-center"
           >
-            Explore as Guest
+            Create Account
           </Link>
         </div>
 
         <div className="flex items-center justify-center gap-6 text-sm text-white/30">
-          {['Free forever', 'No credit card', '60s signup'].map(t => (
+          {['Free forever', 'No account needed to browse', 'Sign up in 60s'].map(t => (
             <span key={t} className="flex items-center gap-1.5">
               <Check size={12} className="text-acid" />
               {t}
