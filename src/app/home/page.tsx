@@ -83,6 +83,7 @@ function LoggedInHome({ userId }: { userId: string }) {
   const [recommendedGames, setRecommendedGames] = useState<SupabaseGame[]>([]);
   const [profile, setProfile] = useState<{ display_name: string | null; username: string } | null>(null);
   const [gamingDNA, setGamingDNA] = useState<GamingDNA | null>(null);
+  const [dnaLoading, setDnaLoading] = useState(true);
   const [hotTakes, setHotTakes] = useState<{ game_id: string; game_name: string; game_slug: string; game_cover: string | null; your_rating: number; community_rating: number; difference: number }[]>([]);
   const [dnaCollapsed, setDnaCollapsed] = useState(() => {
     if (typeof window !== 'undefined') return localStorage.getItem('jeggy:dna-collapsed') === 'true';
@@ -242,6 +243,8 @@ function LoggedInHome({ userId }: { userId: string }) {
         setHotTakes(takes);
       } catch (error) {
         console.error('Error fetching gaming DNA:', error);
+      } finally {
+        setDnaLoading(false);
       }
     };
     fetchDNA();
@@ -269,7 +272,19 @@ function LoggedInHome({ userId }: { userId: string }) {
       <div className="ambient-orb w-[400px] h-[400px] top-[600px] -left-48 bg-[radial-gradient(circle,rgba(99,102,241,0.08)_0%,transparent_70%)]" />
 
       {/* Gaming DNA Hero — shown when user has rated 5+ games */}
-      {gamingDNA && gamingDNA.totalRatings >= 5 ? (
+      {dnaLoading ? (
+        <section className="mt-8 mb-10">
+          <div className="animate-pulse bg-bg-card/80 border border-border rounded-sm p-6 sm:p-8">
+            <div className="h-6 bg-bg-elevated rounded w-48 mb-4" />
+            <div className="h-4 bg-bg-elevated rounded w-32 mb-6" />
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="h-24 bg-bg-elevated rounded-sm" />
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : gamingDNA && gamingDNA.totalRatings >= 5 ? (
         <section className="mt-8 mb-10">
           <div className="relative overflow-hidden bg-bg-card/80 backdrop-blur-xl border border-border rounded-sm">
             <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-accent-orange via-accent-teal to-accent-orange" />
