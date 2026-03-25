@@ -168,13 +168,35 @@ export default function FeedPage() {
 
     const profileMap = new Map((profiles || []).map((p) => [p.id, p]));
 
+    // Filter out review activities where the review has been deleted
+    const reviewActivities = actData.filter(a => a.activity_type === 'reviewed_game' && a.game_id);
+    let deletedReviewKeys = new Set<string>();
+    if (reviewActivities.length > 0) {
+      const pairs = reviewActivities.map(a => ({ uid: a.user_id, gid: a.game_id }));
+      const uniqueUsers = [...new Set(pairs.map(p => p.uid))];
+      const uniqueGames = [...new Set(pairs.map(p => p.gid))];
+      const { data: userGames } = await supabase
+        .from('user_games')
+        .select('user_id, game_id, review')
+        .in('user_id', uniqueUsers)
+        .in('game_id', uniqueGames);
+      const existingReviews = new Set((userGames || []).filter(ug => ug.review).map(ug => `${ug.user_id}:${ug.game_id}`));
+      deletedReviewKeys = new Set(
+        reviewActivities
+          .filter(a => !existingReviews.has(`${a.user_id}:${a.game_id}`))
+          .map(a => a.id)
+      );
+    }
+
     setActivities(
-      actData.map((a) => ({
-        ...(a as Activity),
-        username: profileMap.get(a.user_id as string)?.username || 'unknown',
-        display_name: profileMap.get(a.user_id as string)?.display_name || null,
-        avatar_url: profileMap.get(a.user_id as string)?.avatar_url || null,
-      })),
+      actData
+        .filter(a => !deletedReviewKeys.has(a.id))
+        .map((a) => ({
+          ...(a as Activity),
+          username: profileMap.get(a.user_id as string)?.username || 'unknown',
+          display_name: profileMap.get(a.user_id as string)?.display_name || null,
+          avatar_url: profileMap.get(a.user_id as string)?.avatar_url || null,
+        })),
     );
   };
 

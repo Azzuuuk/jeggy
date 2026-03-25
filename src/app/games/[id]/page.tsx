@@ -10,7 +10,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import ColorCodedRating from '@/components/ui/ColorCodedRating';
 import RatingInputHalf from '@/components/ui/RatingInputHalf';
 import { Clock, Users, Bookmark, Play, Check, X, Share2, PenLine, ChevronDown, Heart, Image as ImageIcon, Trophy, Award, BarChart3, MessageCircle, ListPlus, Star, Timer } from 'lucide-react';
-import { createActivity } from '@/lib/activities';
+import { createActivity, removeActivities } from '@/lib/activities';
 import dynamic from 'next/dynamic';
 import { ReportButton } from '@/components/ReportButton';
 
@@ -396,6 +396,8 @@ export default function GamePage({ params }: GamePageProps) {
           gameCoverUrl: game.cover_url,
           review: text,
         });
+      } else {
+        removeActivities({ userId: user.id, gameId: game.id.toString(), activityType: 'reviewed_game' });
       }
       setTimeout(() => fetchReviews(), 500);
     } catch (err) {

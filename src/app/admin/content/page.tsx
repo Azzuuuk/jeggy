@@ -142,7 +142,7 @@ export default function AdminContentPage() {
       } else if (tab === 'sessions') {
         const { data, count, error } = await supabase
           .from('gaming_sessions')
-          .select('id, user_id, game_id, game_name, session_date, hours_played, session_note, platform, created_at', { count: 'exact' })
+          .select('id, user_id, game_id, session_date, hours_played, session_note, platform, created_at', { count: 'exact' })
           .order('created_at', { ascending: false })
           .range(from, to);
         
@@ -161,11 +161,10 @@ export default function AdminContentPage() {
           const { data: profiles } = await supabase.from('profiles').select('id, username').in('id', userIds);
           const userMap = new Map((profiles || []).map(p => [p.id, p.username]));
 
-          // Some sessions don't store game_name — look up from games table
-          const missingGameIds = [...new Set(data.filter(s => !s.game_name).map(s => s.game_id))];
+          const gameIds = [...new Set(data.map(s => String(s.game_id)))];
           const gameMap = new Map<string, string>();
-          if (missingGameIds.length > 0) {
-            const { data: games } = await supabase.from('games').select('id, name').in('id', missingGameIds);
+          if (gameIds.length > 0) {
+            const { data: games } = await supabase.from('games').select('id, name').in('id', gameIds);
             (games || []).forEach(g => gameMap.set(String(g.id), g.name));
           }
 
@@ -178,7 +177,7 @@ export default function AdminContentPage() {
             session_date: s.session_date,
             created_at: s.created_at,
             username: userMap.get(s.user_id) || 'Unknown',
-            game_name: s.game_name || gameMap.get(String(s.game_id)) || 'Unknown Game',
+            game_name: gameMap.get(String(s.game_id)) || 'Unknown Game',
           })));
         } else {
           setSessions([]);
