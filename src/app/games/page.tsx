@@ -466,7 +466,7 @@ function BrowseContent() {
                   >
                     {loadingMore ? (
                       <span className="flex items-center gap-2">
-                        <div className="w-4 h-4 border-2 border-accent-green border-t-transparent rounded-full animate-spin" />
+                        <div className="w-4 h-4 border-2 border-acid border-t-transparent rounded-full animate-spin" />
                         Loading...
                       </span>
                     ) : (

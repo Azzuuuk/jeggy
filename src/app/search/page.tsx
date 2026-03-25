@@ -141,7 +141,7 @@ function SearchContent() {
 
           {loading ? (
             <div className="flex justify-center py-16">
-              <div className="w-8 h-8 border-2 border-accent-green border-t-transparent rounded-full animate-spin" />
+              <div className="w-8 h-8 border-2 border-acid border-t-transparent rounded-full animate-spin" />
             </div>
           ) : totalResults > 0 ? (
             <div className="space-y-10">

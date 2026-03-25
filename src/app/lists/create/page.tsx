@@ -258,7 +258,7 @@ export default function CreateListPage() {
               />
               {searching && (
                 <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                  <div className="w-4 h-4 border-2 border-accent-green border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-acid border-t-transparent rounded-full animate-spin" />
                 </div>
               )}
             </div>
@@ -316,7 +316,7 @@ export default function CreateListPage() {
             ) : (
               /* TierMaker-style tier editor with drag & drop (desktop) + tap-to-move (mobile) */
               <>
-              <div className="border border-[#1a1a1a] rounded-sm overflow-hidden mt-3">
+              <div className="border border-[#1a1a1a] rounded-sm overflow-visible mt-3">
               {(['S', 'A', 'B', 'C', 'D'] as Tier[]).map((tier) => {
                 const color = TIER_COLORS[tier];
                 const isOver = dragOverTier === tier;
@@ -373,7 +373,7 @@ export default function CreateListPage() {
                           </div>
                           {/* Mobile: tier quick-picker */}
                           {mobileSelectGameId === game.id && (
-                            <div className="absolute -bottom-9 left-1/2 -translate-x-1/2 flex gap-1 bg-black/90 rounded-full px-1.5 py-1 border border-white/10 z-20 sm:hidden">
+                            <div className="absolute -top-9 left-1/2 -translate-x-1/2 flex gap-1 bg-black/90 rounded-full px-1.5 py-1 border border-white/10 z-20 sm:hidden">
                               {(['S', 'A', 'B', 'C', 'D'] as Tier[]).map(t => (
                                 <button
                                   key={t}

@@ -179,7 +179,7 @@ export default function AdminReportsPage() {
   if (adminLoading || !isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-green" />
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-acid" />
       </div>
     );
   }
@@ -210,7 +210,7 @@ export default function AdminReportsPage() {
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-green" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-acid" />
         </div>
       ) : reports.length === 0 ? (
         <div className="text-center py-16 bg-bg-card border border-border rounded-sm">
@@ -376,7 +376,7 @@ function ReportCard({
           {/* Content Preview */}
           {loadingPreview ? (
             <div className="bg-bg-primary border border-border rounded-sm p-4 text-center">
-              <div className="w-5 h-5 border-2 border-accent-green border-t-transparent rounded-full animate-spin mx-auto" />
+              <div className="w-5 h-5 border-2 border-acid border-t-transparent rounded-full animate-spin mx-auto" />
               <p className="text-xs text-text-muted mt-2">Loading content...</p>
             </div>
           ) : contentPreview ? (

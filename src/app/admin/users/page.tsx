@@ -93,7 +93,7 @@ export default function AdminUsersPage() {
   if (adminLoading || !isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-green" />
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-acid" />
       </div>
     );
   }
@@ -119,7 +119,7 @@ export default function AdminUsersPage() {
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-green" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-acid" />
         </div>
       ) : (
         <div className="bg-bg-card border border-border rounded-sm overflow-hidden">

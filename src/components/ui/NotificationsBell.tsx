@@ -182,7 +182,7 @@ export function NotificationsBell() {
           <div className="max-h-80 overflow-y-auto">
             {loading ? (
               <div className="flex justify-center py-8">
-                <div className="w-6 h-6 border-2 border-accent-green border-t-transparent rounded-full animate-spin" />
+                <div className="w-6 h-6 border-2 border-acid border-t-transparent rounded-full animate-spin" />
               </div>
             ) : notifications.length === 0 ? (
               <div className="text-center py-8 text-text-muted text-sm">

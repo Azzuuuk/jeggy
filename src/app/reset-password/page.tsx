@@ -87,7 +87,7 @@ export default function ResetPasswordPage() {
     return (
       <div className="min-h-screen flex items-center justify-center px-4 py-8 -mt-14">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-accent-green border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <div className="w-8 h-8 border-2 border-acid border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-text-muted text-sm">Verifying reset link...</p>
         </div>
       </div>
@@ -133,7 +133,7 @@ export default function ResetPasswordPage() {
           <p className="text-text-muted text-sm mb-2">
             Your password has been reset. Redirecting you to log in...
           </p>
-          <div className="w-6 h-6 border-2 border-accent-green border-t-transparent rounded-full animate-spin mx-auto mt-4" />
+          <div className="w-6 h-6 border-2 border-acid border-t-transparent rounded-full animate-spin mx-auto mt-4" />
         </div>
       </div>
     );

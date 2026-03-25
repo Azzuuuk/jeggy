@@ -98,7 +98,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   if (profileLoading && !supabaseProfile) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 border-2 border-accent-green border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-acid border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -936,7 +936,7 @@ function RealProfile({
         {activeTab === 'Lists' && (
           listsLoading ? (
             <div className="flex justify-center py-16">
-              <div className="w-8 h-8 border-2 border-accent-green border-t-transparent rounded-full animate-spin" />
+              <div className="w-8 h-8 border-2 border-acid border-t-transparent rounded-full animate-spin" />
             </div>
           ) : userLists.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -977,7 +977,7 @@ function RealProfile({
         {activeTab === 'Reviews' && (
           reviewsLoading ? (
             <div className="flex justify-center py-16">
-              <div className="w-8 h-8 border-2 border-accent-green border-t-transparent rounded-full animate-spin" />
+              <div className="w-8 h-8 border-2 border-acid border-t-transparent rounded-full animate-spin" />
             </div>
           ) : userReviews.length > 0 ? (
             <div className="space-y-4">

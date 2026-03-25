@@ -114,7 +114,7 @@ export default function DiaryInputModal({ isOpen, onClose }: DiaryInputModalProp
               />
               {searching && (
                 <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                  <div className="w-4 h-4 border-2 border-accent-green border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-acid border-t-transparent rounded-full animate-spin" />
                 </div>
               )}
             </div>

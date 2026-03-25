@@ -272,7 +272,7 @@ export default function DiscoverPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-24">
         {loading ? (
           <div className="flex justify-center py-16">
-            <div className="w-8 h-8 border-2 border-accent-green border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-acid border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
           <>
@@ -292,7 +292,7 @@ export default function DiscoverPage() {
 
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
                     <div className="bg-bg-primary border border-border rounded-sm p-4 text-center">
-                      <p className="text-2xl font-bold font-[family-name:var(--font-mono)] text-text-primary">{gamingDNA.personality.label.replace('The ', '')}</p>
+                      <p className="text-base sm:text-2xl font-bold font-[family-name:var(--font-mono)] text-text-primary truncate">{gamingDNA.personality.label.replace('The ', '')}</p>
                       <p className="text-[10px] text-text-muted uppercase tracking-wider mt-1">Gamer Type</p>
                     </div>
                     <div className="bg-bg-primary border border-border rounded-sm p-4 text-center">

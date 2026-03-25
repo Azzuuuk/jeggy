@@ -906,11 +906,11 @@ function ContentSection({ games }: { games: GameCover[] }) {
   ];
 
   return (
-    <section className="py-14 sm:py-20 relative overflow-hidden">
+    <section className="py-14 sm:py-20 relative overflow-x-hidden">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-line to-transparent" />
       <AtmosphericFog variant="warm" />
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="grid md:grid-cols-2 gap-10 lg:gap-14 items-start">
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-14 items-start">
           {/* Left: Description */}
           <motion.div
             initial="hidden"
@@ -933,12 +933,12 @@ function ContentSection({ games }: { games: GameCover[] }) {
               </span>
             </h2>
 
-            <p className="text-lg text-white/30 mb-8">
+            <p className="text-base sm:text-lg text-white/30 mb-6 sm:mb-8">
               Daily content across YouTube, TikTok, and Instagram.
               Game reviews, industry news, reports, and real public opinions.
             </p>
 
-            <div className="space-y-3 mb-8">
+            <div className="space-y-2.5 sm:space-y-3 mb-6 sm:mb-8">
               {[
                 { Icon: Play, text: 'In-depth video reviews on YouTube', color: 'text-white/50', bg: 'bg-white/[0.04] border-white/10' },
                 { Icon: Zap, text: '60-second takes on TikTok', color: 'text-white/50', bg: 'bg-white/[0.04] border-white/10' },
@@ -954,20 +954,20 @@ function ContentSection({ games }: { games: GameCover[] }) {
               ))}
             </div>
 
-            <div className="flex flex-wrap gap-3">
-              <a href="https://youtube.com/@jeggy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2.5 px-5 py-2.5 bg-white/[0.04] border border-white/10 text-white/70 rounded-full text-sm font-semibold hover:bg-white/[0.08] transition-colors duration-300">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
+              <a href="https://youtube.com/@jeggy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/[0.04] border border-white/10 text-white/70 rounded-full text-xs sm:text-sm font-semibold hover:bg-white/[0.08] transition-colors duration-300">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/Youtube_logo (1).png" alt="YouTube" className="w-5 h-5 object-contain" />
+                <img src="/Youtube_logo (1).png" alt="YouTube" className="w-4 h-4 sm:w-5 sm:h-5 object-contain" />
                 YouTube
               </a>
-              <a href="https://tiktok.com/@jeggy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2.5 px-5 py-2.5 bg-white/[0.04] border border-white/10 text-white/70 rounded-full text-sm font-semibold hover:bg-white/[0.08] transition-colors duration-300">
+              <a href="https://tiktok.com/@jeggy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/[0.04] border border-white/10 text-white/70 rounded-full text-xs sm:text-sm font-semibold hover:bg-white/[0.08] transition-colors duration-300">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/tiktoklogo.webp" alt="TikTok" className="w-5 h-5 object-contain" />
+                <img src="/tiktoklogo.webp" alt="TikTok" className="w-4 h-4 sm:w-5 sm:h-5 object-contain" />
                 TikTok
               </a>
-              <a href="https://instagram.com/jeggy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2.5 px-5 py-2.5 bg-white/[0.04] border border-white/10 text-white/70 rounded-full text-sm font-semibold hover:bg-white/[0.08] transition-colors duration-300">
+              <a href="https://instagram.com/jeggy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/[0.04] border border-white/10 text-white/70 rounded-full text-xs sm:text-sm font-semibold hover:bg-white/[0.08] transition-colors duration-300">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/Instagram_logo_2022.svg.png" alt="Instagram" className="w-5 h-5 object-contain" />
+                <img src="/Instagram_logo_2022.svg.png" alt="Instagram" className="w-4 h-4 sm:w-5 sm:h-5 object-contain" />
                 Instagram
               </a>
             </div>
