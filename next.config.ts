@@ -2,7 +2,29 @@ import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Increase client-side router cache so navigating between pages reuses cached RSC payloads
+  experimental: {
+    staleTimes: {
+      dynamic: 180,  // Cache dynamic pages for 3 min client-side (default 30s)
+      static: 300,   // Cache static pages for 5 min client-side (default 5 min)
+    },
+  },
+  headers: async () => [
+    {
+      // Long cache for immutable build assets (JS, CSS chunks with hash in filename)
+      source: '/_next/static/:path*',
+      headers: [
+        { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+      ],
+    },
+    {
+      // Cache public images
+      source: '/(.*)\\.(png|jpg|jpeg|svg|ico|webp)',
+      headers: [
+        { key: 'Cache-Control', value: 'public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400' },
+      ],
+    },
+  ],
 };
 
 export default withSentryConfig(nextConfig, {
