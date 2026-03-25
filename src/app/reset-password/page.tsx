@@ -85,7 +85,7 @@ export default function ResetPasswordPage() {
   // Loading state
   if (pageState === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4 -mt-14">
+      <div className="min-h-screen flex items-center justify-center px-4 py-8 -mt-14">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-accent-green border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-text-muted text-sm">Verifying reset link...</p>
@@ -97,8 +97,8 @@ export default function ResetPasswordPage() {
   // Expired / invalid link
   if (pageState === 'expired') {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4 -mt-14">
-        <div className="max-w-md w-full bg-bg-card/80 backdrop-blur-xl border border-border rounded-sm p-8 text-center">
+      <div className="min-h-screen flex items-center justify-center px-4 py-8 -mt-14">
+        <div className="max-w-md w-full bg-bg-card/80 backdrop-blur-xl border border-border rounded-sm p-6 sm:p-8 text-center">
           <div className="w-16 h-16 bg-danger/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <AlertTriangle className="w-8 h-8 text-danger" />
           </div>
@@ -124,8 +124,8 @@ export default function ResetPasswordPage() {
   // Success state
   if (pageState === 'success') {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4 -mt-14">
-        <div className="max-w-md w-full bg-bg-card/80 backdrop-blur-xl border border-border rounded-sm p-8 text-center">
+      <div className="min-h-screen flex items-center justify-center px-4 py-8 -mt-14">
+        <div className="max-w-md w-full bg-bg-card/80 backdrop-blur-xl border border-border rounded-sm p-6 sm:p-8 text-center">
           <div className="w-16 h-16 bg-accent-green/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-8 h-8 text-accent-green" />
           </div>
@@ -141,8 +141,8 @@ export default function ResetPasswordPage() {
 
   // Ready state — show form
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 -mt-14">
-      <div className="max-w-md w-full bg-bg-card/80 backdrop-blur-xl border border-border rounded-sm p-8">
+    <div className="min-h-screen flex items-center justify-center px-4 py-8 -mt-14">
+      <div className="max-w-md w-full bg-bg-card/80 backdrop-blur-xl border border-border rounded-sm p-6 sm:p-8">
         <div className="flex justify-center mb-6">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/JeggyLogo.png" alt="Jeggy" className="h-14 w-auto" />

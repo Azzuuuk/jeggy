@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { SupabaseGame } from '@/lib/types';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Star, ArrowRight, Gamepad2, Clock, ListOrdered, MessageCircle, Compass, Flame } from 'lucide-react';
+import { Star, ArrowRight, Gamepad2, Clock, ListOrdered, MessageCircle, Compass, Flame, ChevronDown } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getRatingColor } from '@/components/ui/ColorCodedRating';
 import { calculateGamingDNA, findHotTakes, type GamingDNA } from '@/lib/gamingDNA';
@@ -84,6 +84,10 @@ function LoggedInHome({ userId }: { userId: string }) {
   const [profile, setProfile] = useState<{ display_name: string | null; username: string } | null>(null);
   const [gamingDNA, setGamingDNA] = useState<GamingDNA | null>(null);
   const [hotTakes, setHotTakes] = useState<{ game_id: string; game_name: string; game_slug: string; game_cover: string | null; your_rating: number; community_rating: number; difference: number }[]>([]);
+  const [dnaCollapsed, setDnaCollapsed] = useState(() => {
+    if (typeof window !== 'undefined') return localStorage.getItem('jeggy:dna-collapsed') === 'true';
+    return false;
+  });
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -275,10 +279,25 @@ function LoggedInHome({ userId }: { userId: string }) {
                   <Compass size={20} className="text-accent-orange" />
                   Your Gaming DNA
                 </h2>
-                <Link href={profile ? `/profile/${profile.username}` : '/settings'} className="text-xs text-accent-green hover:underline">
-                  Full Profile
-                </Link>
+                <div className="flex items-center gap-3">
+                  <Link href={profile ? `/profile/${profile.username}` : '/settings'} className="text-xs text-accent-green hover:underline">
+                    Full Profile
+                  </Link>
+                  <button
+                    onClick={() => {
+                      const next = !dnaCollapsed;
+                      setDnaCollapsed(next);
+                      localStorage.setItem('jeggy:dna-collapsed', String(next));
+                    }}
+                    className="p-1 rounded hover:bg-white/5 transition-colors text-text-muted hover:text-text-primary"
+                    aria-label={dnaCollapsed ? 'Expand Gaming DNA' : 'Minimize Gaming DNA'}
+                  >
+                    <ChevronDown size={18} className={`transition-transform duration-300 ${dnaCollapsed ? '' : 'rotate-180'}`} />
+                  </button>
+                </div>
               </div>
+              {!dnaCollapsed && (
+                <>
               <p className="text-sm text-text-muted mb-6">Based on {gamingDNA.totalRatings} games you&apos;ve rated</p>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -354,6 +373,8 @@ function LoggedInHome({ userId }: { userId: string }) {
                   </div>
                 </Link>
               </div>
+                </>
+              )}
             </div>
           </div>
         </section>

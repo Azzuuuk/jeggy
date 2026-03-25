@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { SupabaseGame } from '@/lib/types';
-import { Search, X, GripVertical } from 'lucide-react';
+import { Search, X, GripVertical, ChevronDown } from 'lucide-react';
 import { createActivity } from '@/lib/activities';
 
 type Tier = 'S' | 'A' | 'B' | 'C' | 'D';
@@ -43,6 +43,7 @@ export default function CreateListPage() {
   const [saving, setSaving] = useState(false);
   const [dragGameId, setDragGameId] = useState<number | null>(null);
   const [dragOverTier, setDragOverTier] = useState<Tier | null>(null);
+  const [mobileSelectGameId, setMobileSelectGameId] = useState<number | null>(null);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -313,7 +314,8 @@ export default function CreateListPage() {
                 </div>
               ))
             ) : (
-              /* TierMaker-style tier editor with drag & drop */
+              /* TierMaker-style tier editor with drag & drop (desktop) + tap-to-move (mobile) */
+              <>
               <div className="border border-[#1a1a1a] rounded-sm overflow-hidden mt-3">
               {(['S', 'A', 'B', 'C', 'D'] as Tier[]).map((tier) => {
                 const color = TIER_COLORS[tier];
@@ -330,19 +332,25 @@ export default function CreateListPage() {
                     if (dragGameId !== null) updateTier(dragGameId, tier);
                     setDragGameId(null);
                   }}
+                  onClick={() => {
+                    if (mobileSelectGameId !== null) {
+                      updateTier(mobileSelectGameId, tier);
+                      setMobileSelectGameId(null);
+                    }
+                  }}
                 >
                   {/* Tier label block */}
                   <div
-                    className="w-[72px] sm:w-[88px] flex-shrink-0 flex items-center justify-center"
+                    className={`w-[72px] sm:w-[88px] flex-shrink-0 flex items-center justify-center ${mobileSelectGameId !== null ? 'cursor-pointer' : ''}`}
                     style={{ backgroundColor: color }}
                   >
                     <span className="text-3xl sm:text-4xl font-black text-black/80 select-none">{tier}</span>
                   </div>
                   {/* Items area */}
-                  <div className={`flex-1 flex flex-wrap items-start content-start gap-[3px] p-[3px] min-h-[90px] transition-colors ${isOver ? 'bg-[#252545]' : 'bg-[#1a1a2e]'}`}>
+                  <div className={`flex-1 flex flex-wrap items-start content-start gap-[3px] p-[3px] min-h-[90px] transition-colors ${isOver ? 'bg-[#252545]' : mobileSelectGameId !== null ? 'bg-[#1f1f3a]' : 'bg-[#1a1a2e]'}`}>
                     {gamesByTier && gamesByTier[tier].length === 0 ? (
                       <div className="flex items-center justify-center w-full h-full text-text-muted text-xs py-4">
-                        {isOver ? 'Release to drop here' : 'Drag games here'}
+                        {mobileSelectGameId !== null ? 'Tap to place here' : isOver ? 'Release to drop here' : <><span className="hidden sm:inline">Drag games here</span><span className="sm:hidden">Tap a game, then tap a tier</span></>}
                       </div>
                     ) : (
                       gamesByTier && gamesByTier[tier].map((game) => (
@@ -351,16 +359,35 @@ export default function CreateListPage() {
                           draggable
                           onDragStart={() => setDragGameId(game.id)}
                           onDragEnd={() => { setDragGameId(null); setDragOverTier(null); }}
-                          className={`relative group cursor-grab active:cursor-grabbing ${dragGameId === game.id ? 'opacity-40' : ''}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setMobileSelectGameId(prev => prev === game.id ? null : game.id);
+                          }}
+                          className={`relative group cursor-grab active:cursor-grabbing ${dragGameId === game.id ? 'opacity-40' : ''} ${mobileSelectGameId === game.id ? 'ring-2 ring-accent-orange ring-offset-1 ring-offset-[#1a1a2e] scale-95' : ''} transition-all duration-200`}
                         >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={game.cover_url || '/placeholder.jpg'} alt={game.name} className="w-[64px] h-[85px] sm:w-[72px] sm:h-[96px] object-cover pointer-events-none" />
+                          <img src={game.cover_url || '/placeholder.jpg'} alt={game.name} className="w-[64px] h-[85px] sm:w-[72px] sm:h-[96px] object-cover pointer-events-none rounded-[2px]" />
                           {/* Name tooltip on hover */}
                           <div className="absolute bottom-0 left-0 right-0 bg-black/80 text-[10px] text-white text-center py-0.5 truncate opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                             {game.name}
                           </div>
+                          {/* Mobile: tier quick-picker */}
+                          {mobileSelectGameId === game.id && (
+                            <div className="absolute -bottom-9 left-1/2 -translate-x-1/2 flex gap-1 bg-black/90 rounded-full px-1.5 py-1 border border-white/10 z-20 sm:hidden">
+                              {(['S', 'A', 'B', 'C', 'D'] as Tier[]).map(t => (
+                                <button
+                                  key={t}
+                                  onClick={(e) => { e.stopPropagation(); updateTier(game.id, t); setMobileSelectGameId(null); }}
+                                  className="w-6 h-6 rounded-full text-[10px] font-black text-black/80 active:scale-90 transition-transform"
+                                  style={{ backgroundColor: TIER_COLORS[t] }}
+                                >
+                                  {t}
+                                </button>
+                              ))}
+                            </div>
+                          )}
                           <button
-                            onClick={() => removeGame(game.id)}
+                            onClick={(e) => { e.stopPropagation(); removeGame(game.id); }}
                             className="absolute top-0.5 right-0.5 p-0.5 bg-red-500/80 hover:bg-red-500 rounded-sm text-white opacity-0 group-hover:opacity-100 transition-opacity"
                           >
                             <X size={10} />
@@ -372,6 +399,8 @@ export default function CreateListPage() {
                 </div>
               )})}
               </div>
+              <p className="text-[11px] text-text-muted mt-1 sm:hidden">Tap a game to select, then tap a tier to move it.</p>
+              </>
             )}
           </div>
           <p className="text-xs text-text-muted mt-2">

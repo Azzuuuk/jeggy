@@ -923,7 +923,7 @@ function ContentSection({ games }: { games: GameCover[] }) {
               GAMING MEDIA BRAND
             </div>
 
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight font-[family-name:var(--font-display)]" style={{ letterSpacing: '-0.03em' }}>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-6 leading-tight font-[family-name:var(--font-display)]" style={{ letterSpacing: '-0.03em' }}>
               Honest reviews.
               <br />
               Real opinions.
@@ -981,7 +981,7 @@ function ContentSection({ games }: { games: GameCover[] }) {
             viewport={viewportOnce}
             variants={slideLeft}
           >
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               {videoMockups.map((v, i) => (
                 <motion.div
                   key={i}
@@ -1029,9 +1029,9 @@ function ContentSection({ games }: { games: GameCover[] }) {
             </div>
 
             {/* TikTok reels row */}
-            <div className="flex gap-2 overflow-hidden">
+            <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-2 px-2">
               {games.slice(16, 22).map((g) => (
-                <div key={g.id} className="flex-shrink-0 w-20 relative group/reel">
+                <div key={g.id} className="flex-shrink-0 w-16 sm:w-20 relative group/reel">
                   <div className="aspect-[9/16] rounded-lg overflow-hidden bg-white/[0.03]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={g.cover_url.replace('t_cover_big', 't_cover_small')} alt="" className="w-full h-full object-cover group-hover/reel:scale-105 transition-transform duration-700" style={{ transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)' }} loading="lazy" />

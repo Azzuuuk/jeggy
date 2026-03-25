@@ -72,8 +72,8 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 -mt-14">
-      <div className="max-w-md w-full bg-bg-card/80 backdrop-blur-xl border border-border rounded-sm p-8">
+    <div className="min-h-screen flex items-center justify-center px-4 py-8 -mt-14">
+      <div className="max-w-md w-full bg-bg-card/80 backdrop-blur-xl border border-border rounded-sm p-6 sm:p-8">
         <div className="flex justify-center mb-6">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/JeggyLogo.png" alt="Jeggy" className="h-14 w-auto" />

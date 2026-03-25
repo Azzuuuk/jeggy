@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
 import MobileNav from "@/components/ui/MobileNav";
+import ScrollToTop from "@/components/ScrollToTop";
 import { ToastProvider } from "@/components/ui/Toast";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
@@ -39,6 +40,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${schibsted.variable} ${jetbrains.variable} font-sans antialiased`}>
         <AuthProvider>
+          <ScrollToTop />
           <div id="ambient-layer" aria-hidden="true">
             <div className="orb-lime" />
             <div className="orb-indigo" />

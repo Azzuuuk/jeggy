@@ -42,6 +42,9 @@
   scrollbar-color: #1E1E24 transparent;
 }
 
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
