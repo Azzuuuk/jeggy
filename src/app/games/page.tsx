@@ -69,10 +69,10 @@ function BrowseContent() {
 
     switch (sort) {
       case 'rating-desc':
-        query = query.order('average_rating', { ascending: false }).order('total_ratings', { ascending: false });
+        query = query.order('average_rating', { ascending: false, nullsFirst: false }).order('total_ratings', { ascending: false, nullsFirst: false });
         break;
       case 'rating-asc':
-        query = query.order('average_rating', { ascending: true });
+        query = query.order('average_rating', { ascending: true, nullsFirst: false });
         break;
       case 'release-desc':
         query = query.order('release_year', { ascending: false, nullsFirst: false });
@@ -81,8 +81,10 @@ function BrowseContent() {
         query = query.order('name', { ascending: true });
         break;
       default:
-        query = query.order('igdb_rating_count', { ascending: false });
+        query = query.order('igdb_rating_count', { ascending: false, nullsFirst: false });
     }
+    // Secondary sort for deterministic pagination
+    query = query.order('id', { ascending: true });
 
     return query;
   }, [sort, searchQuery, selectedGenres, selectedPlatforms, timeToBeatFilter]);
@@ -102,7 +104,9 @@ function BrowseContent() {
     const from = games.length;
     const { data, error } = await buildQuery().range(from, from + PAGE_SIZE - 1);
     if (!error && data) {
-      setGames(prev => [...prev, ...(data as SupabaseGame[])]);
+      const existingIds = new Set(games.map(g => g.id));
+      const newGames = (data as SupabaseGame[]).filter(g => !existingIds.has(g.id));
+      setGames(prev => [...prev, ...newGames]);
     }
     setLoadingMore(false);
   };
