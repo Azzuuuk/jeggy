@@ -24,11 +24,11 @@ export async function calculateGamingDNA(userId: string): Promise<GamingDNA> {
     if (ugError) throw ugError;
     if (!userGames || userGames.length === 0) return getEmptyDNA();
 
-    // Fetch game details separately (game_id is text, games.id is int)
+    // Fetch game details including data needed for personality detection
     const gameIds = [...new Set(userGames.map(ug => parseInt(ug.game_id)))].filter(id => !isNaN(id));
     const { data: gamesData } = await supabase
       .from('games')
-      .select('id, genres, average_rating')
+      .select('id, genres, average_rating, igdb_rating_count, release_year, time_to_beat_main')
       .in('id', gameIds);
 
     const gameMap = new Map((gamesData || []).map(g => [g.id.toString(), g]));
@@ -81,12 +81,43 @@ export async function calculateGamingDNA(userId: string): Promise<GamingDNA> {
       Math.round(100 - (avgDifference / 10 * 100))
     ));
 
+    // Game-level stats for personality detection
+    const currentYear = new Date().getFullYear();
+    const releaseYears: number[] = [];
+    let obscureCount = 0;
+    let recentCount = 0;
+    const ttbValues: number[] = [];
+
+    userGames.forEach(ug => {
+      const game = gameMap.get(ug.game_id);
+      if (!game) return;
+      if (game.release_year) {
+        releaseYears.push(game.release_year);
+        if (currentYear - game.release_year <= 2) recentCount++;
+      }
+      if (game.igdb_rating_count != null && game.igdb_rating_count < 100) obscureCount++;
+      if (game.time_to_beat_main != null && game.time_to_beat_main > 0) ttbValues.push(game.time_to_beat_main);
+    });
+
+    const medianReleaseYear = releaseYears.length > 0
+      ? releaseYears.sort((a, b) => a - b)[Math.floor(releaseYears.length / 2)]
+      : currentYear;
+    const avgTTB = ttbValues.length > 0
+      ? ttbValues.reduce((s, v) => s + v, 0) / ttbValues.length
+      : 0;
+
     const personality = determineGamerPersonality({
       avgRating,
       totalRatings: userGames.length,
       topGenres,
       mainstreamAlignment,
       ratingDistribution,
+      obscurePercent: userGames.length > 0 ? (obscureCount / userGames.length) * 100 : 0,
+      recentPercent: userGames.length > 0 ? (recentCount / userGames.length) * 100 : 0,
+      medianReleaseYear,
+      currentYear,
+      avgTTB,
+      gamesWithTTB: ttbValues.length,
     });
 
     // Total hours from gaming sessions
@@ -118,55 +149,156 @@ function determineGamerPersonality(data: {
   topGenres: Array<{ name: string; percentage: number }>;
   mainstreamAlignment: number;
   ratingDistribution: Record<number, number>;
+  obscurePercent: number;
+  recentPercent: number;
+  medianReleaseYear: number;
+  currentYear: number;
+  avgTTB: number;
+  gamesWithTTB: number;
 }) {
-  const { avgRating, totalRatings, topGenres, mainstreamAlignment, ratingDistribution } = data;
+  const {
+    avgRating, totalRatings, topGenres, mainstreamAlignment,
+    ratingDistribution, obscurePercent, recentPercent,
+    medianReleaseYear, currentYear, avgTTB, gamesWithTTB,
+  } = data;
   const ratingSpread = Object.keys(ratingDistribution).length;
 
-  if (totalRatings > 50 && ratingSpread >= 6) {
+  // Count extreme ratings (≤4 or ≥9)
+  let extremeCount = 0;
+  Object.entries(ratingDistribution).forEach(([rating, count]) => {
+    const r = parseInt(rating);
+    if (r <= 4 || r >= 9) extremeCount += count;
+  });
+  const extremePercent = totalRatings > 0 ? (extremeCount / totalRatings) * 100 : 0;
+
+  // --- Distinctive volume + behavior ---
+
+  if (totalRatings >= 75 && ratingSpread >= 7) {
     return {
       label: 'The Completionist',
-      description: 'You play and rate everything. No game left behind.',
+      description: 'You play and rate everything. No game left behind, no score left ungiven.',
     };
   }
-  if (avgRating < 6.5 && totalRatings > 20) {
+
+  if (extremePercent > 50 && totalRatings >= 15 && ratingSpread >= 4) {
+    return {
+      label: 'All or Nothing',
+      description: 'Masterpiece or trash. You don\'t do "it was okay."',
+    };
+  }
+
+  // --- Strong rating patterns ---
+
+  if (avgRating > 8.5 && totalRatings >= 10) {
+    return {
+      label: 'Hype Machine',
+      description: 'Everything you play is amazing and you want the world to know.',
+    };
+  }
+
+  if (avgRating < 6.0 && totalRatings >= 15) {
     return {
       label: 'The Critic',
-      description: "You have high standards and aren't afraid to share them.",
+      description: 'Your standards are higher than most studios\' budgets.',
     };
   }
-  if (avgRating > 8.0) {
+
+  if (avgRating >= 6.5 && avgRating <= 7.5 && ratingSpread >= 5 && totalRatings >= 20) {
     return {
-      label: 'The Enthusiast',
-      description: 'You love gaming and find joy in most titles you play.',
+      label: 'Perfectly Balanced',
+      description: 'You use the full scale like it was designed. Respect.',
     };
   }
-  if (mainstreamAlignment < 50) {
+
+  // --- Game selection patterns (need enough data) ---
+
+  if (obscurePercent > 50 && totalRatings >= 10) {
     return {
-      label: 'The Contrarian',
-      description: 'Your taste diverges from the crowd. You see what others miss.',
+      label: 'Crate Digger',
+      description: 'You find games most people don\'t even know exist. The algorithm fears you.',
     };
   }
-  if (topGenres.length > 0 && topGenres[0].percentage > 50) {
+
+  if (recentPercent > 60 && totalRatings >= 10) {
     return {
-      label: 'The Specialist',
-      description: `You know what you like: ${topGenres[0].name} games.`,
+      label: 'Day-One Addict',
+      description: 'If it just dropped, you\'ve already rated it. Sleep is optional.',
     };
   }
-  if (topGenres.length >= 5 && topGenres[0].percentage < 30) {
+
+  if (currentYear - medianReleaseYear >= 8 && totalRatings >= 10) {
     return {
-      label: 'The Genre Nomad',
-      description: 'You explore all corners of gaming. Variety is your spice.',
+      label: 'Old Soul',
+      description: 'Still playing the greats while everyone chases the new. Timeless taste.',
     };
   }
-  if (totalRatings < 20) {
+
+  if (avgTTB > 35 && gamesWithTTB >= 5) {
+    return {
+      label: 'Marathon Runner',
+      description: 'Short games don\'t exist in your world. You\'re here for the long haul.',
+    };
+  }
+
+  // --- Taste patterns ---
+
+  if (mainstreamAlignment < 40 && totalRatings >= 10) {
+    return {
+      label: 'Main Character',
+      description: 'Everyone else is wrong and you have the ratings to prove it.',
+    };
+  }
+
+  if (topGenres.length > 0 && topGenres[0].percentage > 50 && totalRatings >= 8) {
+    return {
+      label: 'One-Trick',
+      description: `${topGenres[0].name} is not a genre, it\'s a lifestyle. You get it.`,
+    };
+  }
+
+  if (topGenres.length >= 5 && topGenres[0].percentage < 30 && totalRatings >= 8) {
+    return {
+      label: 'Genre Nomad',
+      description: 'RPG Monday, horror Tuesday, farming sim Wednesday. You can\'t be boxed in.',
+    };
+  }
+
+  // --- Broad catches (ensure minimal fallback) ---
+
+  if (avgRating >= 7.0 && totalRatings >= 5) {
+    return {
+      label: 'Certified Fan',
+      description: 'You genuinely love games and your ratings show it. Keep going.',
+    };
+  }
+
+  if (avgRating < 7.0 && totalRatings >= 8) {
+    return {
+      label: 'Tough Crowd',
+      description: 'You don\'t hand out praise easily. Games have to earn it.',
+    };
+  }
+
+  // --- Low volume ---
+
+  if (totalRatings < 5) {
+    return {
+      label: 'Tutorial Mode',
+      description: 'You just started. Rate a few more and your real type will emerge.',
+    };
+  }
+
+  if (totalRatings < 15) {
     return {
       label: 'The Explorer',
-      description: "You're just beginning your journey. Keep rating!",
+      description: 'Building your profile one rating at a time. The picture is forming.',
     };
   }
+
+  // --- Fallback (virtually unreachable) ---
   return {
-    label: 'The Gamer',
-    description: 'You love games and have great taste.',
+    label: 'Gaming Baby',
+    description: 'Still figuring out your vibe. Keep rating and your type will lock in.',
   };
 }
 
@@ -177,8 +309,8 @@ function getEmptyDNA(): GamingDNA {
     totalHours: 0,
     topGenres: [],
     personality: {
-      label: 'New Explorer',
-      description: 'Start rating games to discover your gaming DNA',
+      label: 'Mr. I Don\'t Rate Games',
+      description: 'You\'re here but your ratings aren\'t. Fix that.',
     },
     mainstreamAlignment: 50,
     ratingDistribution: {},
