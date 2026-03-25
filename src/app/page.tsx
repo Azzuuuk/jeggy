@@ -568,7 +568,7 @@ function FeaturesSection({ games }: { games: GameCover[] }) {
                   />
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <span className="text-[8px] font-[family-name:var(--font-mono)] text-white/20 uppercase tracking-wider">You Are</span>
-                    <span className="text-base sm:text-lg font-black text-white mt-0.5 font-[family-name:var(--font-display)] tracking-tight">THE SPECIALIST</span>
+                    <span className="text-base sm:text-lg font-black text-white mt-0.5 font-[family-name:var(--font-display)] tracking-tight">CRATE DIGGER</span>
                   </div>
                 </div>
 
