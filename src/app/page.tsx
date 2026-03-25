@@ -166,7 +166,7 @@ export default function LandingPage() {
       .select('id, name, cover_url, slug, average_rating')
       .not('cover_url', 'is', null)
       .gt('igdb_rating_count', 0)
-      .order('igdb_rating_count', { ascending: false })
+      .order('igdb_rating_count', { ascending: false, nullsFirst: false })
       .limit(30)
       .then(({ data }) => { if (data) setGames(data); });
   }, []);

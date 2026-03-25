@@ -33,7 +33,7 @@ export default function TasteQuizPage() {
         .select('id, name, slug, cover_url, summary, genres, release_year, average_rating')
         .gte('average_rating', 7)
         .gte('igdb_rating_count', 50)
-        .order('igdb_rating_count', { ascending: false })
+        .order('igdb_rating_count', { ascending: false, nullsFirst: false })
         .limit(80);
 
       if (error) throw error;

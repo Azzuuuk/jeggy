@@ -57,7 +57,7 @@ function SearchContent() {
         .from('games')
         .select('id, name, slug, cover_url, average_rating, genres, developers, platforms, release_year')
         .or(`name.ilike.%${term}%,genres.cs.{${term}},themes.cs.{${term}},developers.cs.{${term}}`)
-        .order('igdb_rating_count', { ascending: false })
+        .order('igdb_rating_count', { ascending: false, nullsFirst: false })
         .limit(40),
       supabase
         .from('lists')

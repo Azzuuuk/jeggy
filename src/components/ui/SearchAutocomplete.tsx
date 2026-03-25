@@ -56,7 +56,7 @@ export default function SearchAutocomplete({ compact = false, defaultValue = '' 
         .from('games')
         .select('id, name, slug, cover_url, average_rating, genres, developers')
         .or(`name.ilike.%${term}%,genres.cs.{${term}},themes.cs.{${term}},developers.cs.{${term}}`)
-        .order('igdb_rating_count', { ascending: false })
+        .order('igdb_rating_count', { ascending: false, nullsFirst: false })
         .limit(5),
       supabase
         .from('lists')

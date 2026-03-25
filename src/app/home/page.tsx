@@ -105,7 +105,7 @@ function LoggedInHome({ userId }: { userId: string }) {
           ? supabase.from('games').select(GAME_FIELDS).gt('average_rating', 0).order('average_rating', { ascending: false }).limit(6)
           : { data: cachedTop },
         needsGlobalFetch
-          ? supabase.from('games').select(GAME_FIELDS).order('igdb_rating_count', { ascending: false }).limit(12)
+          ? supabase.from('games').select(GAME_FIELDS).order('igdb_rating_count', { ascending: false, nullsFirst: false }).limit(12)
           : { data: cachedPop },
         needsGlobalFetch
           ? supabase.from('games').select(GAME_FIELDS).not('release_year', 'is', null).order('first_release_date', { ascending: false, nullsFirst: false }).limit(10)
@@ -199,7 +199,7 @@ function LoggedInHome({ userId }: { userId: string }) {
             .from('games')
             .select('id, name, slug, cover_url, average_rating, igdb_rating_count, genres')
             .gt('average_rating', 8)
-            .order('igdb_rating_count', { ascending: false })
+            .order('igdb_rating_count', { ascending: false, nullsFirst: false })
             .limit(5);
           setRecommendedGames((fallback || []) as SupabaseGame[]);
           return;
@@ -216,7 +216,7 @@ function LoggedInHome({ userId }: { userId: string }) {
           .from('games')
           .select('id, name, slug, cover_url, average_rating, igdb_rating_count, genres')
           .gt('average_rating', 7)
-          .order('igdb_rating_count', { ascending: false })
+          .order('igdb_rating_count', { ascending: false, nullsFirst: false })
           .limit(50);
 
         const filtered = recs?.filter(game =>
