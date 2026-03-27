@@ -133,9 +133,9 @@ export default function DiscoverPage() {
       .select('user_id, game_id, rating')
       .in('user_id', userIds)
       .not('rating', 'is', null)
-      .gte('rating', 7)
+      .gt('rating', 0)
       .order('rating', { ascending: false })
-      .limit(100);
+      .limit(500);
 
     const userTopGameIds: Record<string, string[]> = {};
     (topRated || []).forEach((ug) => {
@@ -159,7 +159,7 @@ export default function DiscoverPage() {
           ...p,
           games_count: totalGames[p.id] || 0,
           recent_activity: activityCounts[p.id] || 0,
-          top_games: (userTopGameIds[p.id] || []).map((gid) => gameMap[gid] || { name: 'Unknown', cover_url: null }),
+          top_games: (userTopGameIds[p.id] || []).map((gid) => gameMap[gid] || { name: 'Unknown', cover_url: null }).filter((g) => g.cover_url),
         }))
         .sort((a, b) => b.recent_activity - a.recent_activity),
     );
@@ -168,34 +168,52 @@ export default function DiscoverPage() {
   const fetchSimilarGamers = async () => {
     if (!user) return;
     try {
+      // Get ALL of the current user's rated games (not just ≥7)
       const { data: myGames } = await supabase
         .from('user_games')
         .select('game_id, rating')
         .eq('user_id', user.id)
-        .gte('rating', 7);
+        .not('rating', 'is', null)
+        .gt('rating', 0);
 
       if (!myGames?.length) return;
 
+      const myRatings = new Map(myGames.map((g) => [g.game_id, g.rating as number]));
       const myGameIds = myGames.map((g) => g.game_id);
 
+      // Find other users who rated the same games
       const { data: othersGames } = await supabase
         .from('user_games')
-        .select('user_id, game_id')
+        .select('user_id, game_id, rating')
         .in('game_id', myGameIds)
-        .gte('rating', 7)
+        .not('rating', 'is', null)
+        .gt('rating', 0)
         .neq('user_id', user.id);
 
       if (!othersGames?.length) return;
 
-      const scores: Record<string, number> = {};
+      // Calculate compatibility using same formula as profile page
+      const userStats: Record<string, { shared: number; totalDiff: number }> = {};
       othersGames.forEach((ug) => {
-        scores[ug.user_id] = (scores[ug.user_id] || 0) + 1;
+        const myRating = myRatings.get(ug.game_id);
+        if (myRating == null || ug.rating == null) return;
+        if (!userStats[ug.user_id]) userStats[ug.user_id] = { shared: 0, totalDiff: 0 };
+        userStats[ug.user_id].shared++;
+        userStats[ug.user_id].totalDiff += Math.abs(myRating - ug.rating);
       });
 
-      const topIds = Object.entries(scores)
-        .sort(([, a], [, b]) => b - a)
+      // Require at least 2 shared games for a meaningful match
+      const topIds = Object.entries(userStats)
+        .filter(([, s]) => s.shared >= 2)
+        .sort(([, a], [, b]) => {
+          const compatA = Math.max(0, (1 - a.totalDiff / a.shared / 5) * 100);
+          const compatB = Math.max(0, (1 - b.totalDiff / b.shared / 5) * 100);
+          return compatB - compatA;
+        })
         .slice(0, 12)
         .map(([uid]) => uid);
+
+      if (!topIds.length) return;
 
       const { data: profiles } = await supabase
         .from('profiles')
@@ -221,9 +239,9 @@ export default function DiscoverPage() {
         .select('user_id, game_id, rating')
         .in('user_id', topIds)
         .not('rating', 'is', null)
-        .gte('rating', 7)
+        .gt('rating', 0)
         .order('rating', { ascending: false })
-        .limit(100);
+        .limit(500);
 
       const userTopGameIds: Record<string, string[]> = {};
       (topRated || []).forEach((ug) => {
@@ -243,15 +261,20 @@ export default function DiscoverPage() {
 
       setSimilarUsers(
         profiles
-          .map((p) => ({
-            ...p,
-            games_count: totalGames[p.id] || 0,
-            recent_activity: 0,
-            shared_games: scores[p.id],
-            similarity_score: Math.round((scores[p.id] / myGameIds.length) * 100),
-            top_games: (userTopGameIds[p.id] || []).map((gid) => gameMap[gid] || { name: 'Unknown', cover_url: null }),
-          }))
-          .sort((a, b) => b.shared_games - a.shared_games),
+          .map((p) => {
+            const stats = userStats[p.id] || { shared: 0, totalDiff: 0 };
+            const avgDiff = stats.shared > 0 ? stats.totalDiff / stats.shared : 5;
+            const compat = Math.round(Math.max(0, (1 - avgDiff / 5) * 100));
+            return {
+              ...p,
+              games_count: totalGames[p.id] || 0,
+              recent_activity: 0,
+              shared_games: stats.shared,
+              similarity_score: compat,
+              top_games: (userTopGameIds[p.id] || []).map((gid) => gameMap[gid] || { name: 'Unknown', cover_url: null }).filter((g) => g.cover_url),
+            };
+          })
+          .sort((a, b) => b.similarity_score - a.similarity_score),
       );
     } catch (err) {
       console.error('Similar gamers error:', err);
@@ -374,26 +397,6 @@ export default function DiscoverPage() {
                 </div>
               </section>
             )}
-            {/* Trending Gamers */}
-            {trendingUsers.length > 0 && (
-              <section className="mb-12">
-                <div className="flex items-center gap-2 mb-1">
-                  <TrendingUp className="w-5 h-5 text-accent-orange" />
-                  <h2 className="text-lg font-bold font-[family-name:var(--font-display)] text-text-primary">Trending Gamers</h2>
-                </div>
-                <p className="text-xs text-text-muted mb-5">Most active in the community right now</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {trendingUsers.map((u) => (
-                    <GamerCard key={u.id} user={u} badge={
-                      <span className="px-2 py-0.5 bg-accent-orange/10 text-accent-orange rounded-sm text-xs font-medium flex items-center gap-1">
-                        <TrendingUp size={11} /> {u.recent_activity} recent
-                      </span>
-                    } />
-                  ))}
-                </div>
-              </section>
-            )}
-
             {/* Similar Taste */}
             {similarUsers.length > 0 && (
               <section className="mb-12">
@@ -407,6 +410,26 @@ export default function DiscoverPage() {
                     <GamerCard key={u.id} user={u} badge={
                       <span className="px-2 py-0.5 bg-accent-green/10 text-accent-green rounded-sm text-xs font-medium">
                         {u.similarity_score}% match · {u.shared_games} shared
+                      </span>
+                    } />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Trending Gamers */}
+            {trendingUsers.length > 0 && (
+              <section className="mb-12">
+                <div className="flex items-center gap-2 mb-1">
+                  <TrendingUp className="w-5 h-5 text-accent-orange" />
+                  <h2 className="text-lg font-bold font-[family-name:var(--font-display)] text-text-primary">Trending Gamers</h2>
+                </div>
+                <p className="text-xs text-text-muted mb-5">Most active in the community right now</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {trendingUsers.map((u) => (
+                    <GamerCard key={u.id} user={u} badge={
+                      <span className="px-2 py-0.5 bg-accent-orange/10 text-accent-orange rounded-sm text-xs font-medium flex items-center gap-1">
+                        <TrendingUp size={11} /> {u.recent_activity} recent
                       </span>
                     } />
                   ))}

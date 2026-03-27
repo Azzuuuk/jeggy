@@ -417,7 +417,7 @@ export async function findGamingTwins(userId: string, limit: number = 10) {
         const score = userScores[uid];
         const avgDiff = score.totalDiff / score.shared;
         const compatibility = Math.max(0, Math.min(100,
-          Math.round(100 - (avgDiff / 10 * 100))
+          Math.round((1 - avgDiff / 5) * 100)
         ));
         const profile = profileMap.get(uid);
         return {

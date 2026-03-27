@@ -301,23 +301,33 @@ function RealProfile({
 
   const openFollowersModal = useCallback(async () => {
     setFollowersModalOpen(true);
-    const { data } = await supabase
+    const { data: followRows } = await supabase
       .from('follows')
-      .select('follower_id, profiles!follows_follower_id_fkey(id, username, display_name, avatar_url)')
+      .select('follower_id')
       .eq('following_id', profile.id);
-    if (data) {
-      setFollowersList(data.map((d: any) => d.profiles).filter(Boolean));
+    if (followRows?.length) {
+      const ids = followRows.map((r: any) => r.follower_id);
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, username, display_name, avatar_url')
+        .in('id', ids);
+      if (profiles) setFollowersList(profiles);
     }
   }, [profile.id]);
 
   const openFollowingModal = useCallback(async () => {
     setFollowingModalOpen(true);
-    const { data } = await supabase
+    const { data: followRows } = await supabase
       .from('follows')
-      .select('following_id, profiles!follows_following_id_fkey(id, username, display_name, avatar_url)')
+      .select('following_id')
       .eq('follower_id', profile.id);
-    if (data) {
-      setFollowingList(data.map((d: any) => d.profiles).filter(Boolean));
+    if (followRows?.length) {
+      const ids = followRows.map((r: any) => r.following_id);
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, username, display_name, avatar_url')
+        .in('id', ids);
+      if (profiles) setFollowingList(profiles);
     }
   }, [profile.id]);
 

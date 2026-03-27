@@ -301,10 +301,22 @@ export default function GamePage({ params }: GamePageProps) {
         });
       }
 
-      // Bayesian average: blend IGDB seed (35 virtual votes) with real user ratings
+      // Bayesian average: blend IGDB-anchored seed with real user ratings.
+      // The anchor uses a trust-weighted IGDB score (not raw igdb/10) to avoid
+      // niche games with few IGDB votes getting inflated anchors.
       if (updates.rating !== undefined) {
         const VIRTUAL_VOTES = 35;
-        const igdbSeed = game.igdb_rating ? game.igdb_rating / 10 : 0;
+        // Bayesian IGDB anchor: weight IGDB rating by its vote count
+        const PRIOR_RATING = 7.0; // neutral "good" prior
+        const PRIOR_COUNT = 150;  // how many virtual IGDB votes to mix in
+        const igdbRaw = game.igdb_rating || 0;
+        const igdbCount = game.igdb_rating_count || 0;
+        const igdbWeighted = igdbRaw > 0
+          ? (igdbCount * igdbRaw + PRIOR_COUNT * (PRIOR_RATING * 10)) / (igdbCount + PRIOR_COUNT) / 10
+          : 0;
+        // Soft cap above 9.0
+        const igdbSeed = igdbWeighted > 9.0 ? 9.0 + (igdbWeighted - 9.0) * 0.5 : igdbWeighted;
+
         const { data: allRatings } = await supabase
           .from('user_games')
           .select('rating')
