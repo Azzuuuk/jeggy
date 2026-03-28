@@ -1,4 +1,10 @@
 import { Gamepad2, ListOrdered, Users, DollarSign, Trophy } from 'lucide-react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'About',
+  description: 'Learn about Jeggy, the gaming identity platform. Discover how we help gamers rate, review, track, and connect.',
+};
 
 const features = [
   {
@@ -11,7 +17,7 @@ const features = [
     icon: ListOrdered,
     title: 'Curated Lists',
     description:
-      'Create and share game lists for any occasion — top picks, hidden gems, genre deep-dives, and more.',
+      'Create and share game lists for any occasion: top picks, hidden gems, genre deep-dives, and more.',
   },
   {
     icon: Users,
@@ -29,7 +35,7 @@ const features = [
     icon: Trophy,
     title: 'Track Your Journey',
     description:
-      "Track what you've played, what you're playing, and what you want to play next — all in one place.",
+      "Track what you've played, what you're playing, and what you want to play next; all in one place.",
   },
 ];
 
@@ -39,7 +45,7 @@ export default function AboutPage() {
       <h1 className="text-3xl font-bold text-primary mb-6">About Jeggy</h1>
 
       <p className="text-secondary">
-        Jeggy is Letterboxd for video games — a platform where gamers can
+        Jeggy is Letterboxd for video games: a platform where gamers can
         discover, rate, and track the games they love. We believe that gaming is
         a deeply personal experience, and every player deserves a place to
         celebrate their taste, share discoveries, and connect with others who
@@ -73,7 +79,7 @@ export default function AboutPage() {
       <h2 className="text-xl font-semibold mt-10 mb-4">Our Vision</h2>
 
       <p className="text-secondary">
-        Our vision is to become the definitive gaming identity platform — a place
+        Our vision is to become the definitive gaming identity platform; a place
         where your gaming history, preferences, and social connections come
         together to create a rich, personal profile that evolves with you. We
         want every gamer to feel seen, understood, and connected through the

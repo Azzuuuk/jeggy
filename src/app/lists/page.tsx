@@ -225,7 +225,7 @@ export default function BrowseListsPage() {
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <ListOrdered size={48} className="mx-auto text-text-muted mb-4" />
             <h3 className="text-xl font-bold font-[family-name:var(--font-display)] text-text-primary mb-2">
-              {searchQuery ? 'No lists match your search' : 'No lists yet — create the first one!'}
+              {searchQuery ? 'No lists match your search' : 'No lists yet. Create the first one!'}
             </h3>
             <p className="text-text-secondary text-sm mb-6">
               {searchQuery ? 'Try adjusting your search.' : 'Make a tier list, rank your favorites, drop your hot takes'}

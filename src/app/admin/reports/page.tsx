@@ -99,7 +99,7 @@ export default function AdminReportsPage() {
         userId: reporterId,
         adminId: user.id,
         type: 'report_resolved',
-        message: 'Your report was reviewed. No violation was found — the content will remain.',
+        message: 'Your report was reviewed. No violation was found; the content will remain.',
       });
 
       fetchReports();
@@ -389,7 +389,7 @@ function ReportCard({
             </div>
           ) : report.report_type === 'user' ? (
             <div className="bg-bg-primary border border-border rounded-sm p-4">
-              <p className="text-xs text-text-muted">User report — manage via <Link href="/admin/users" className="text-accent-green hover:opacity-80">Users page</Link></p>
+              <p className="text-xs text-text-muted">User report, manage via <Link href="/admin/users" className="text-accent-green hover:opacity-80">Users page</Link></p>
             </div>
           ) : null}
 

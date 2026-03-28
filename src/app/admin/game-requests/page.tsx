@@ -242,7 +242,7 @@ function RequestCard({ request, onUpdate }: { request: GameRequest; onUpdate: (r
           <textarea
             value={adminNotes}
             onChange={(e) => setAdminNotes(e.target.value)}
-            placeholder="Admin notes (optional) — e.g., Added via IGDB ID 12345"
+            placeholder="Admin notes (optional), e.g., Added via IGDB ID 12345"
             className="w-full px-3 py-2 bg-bg-primary border border-border rounded-sm text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-accent-green min-h-[64px] mb-3 resize-none"
           />
           <div className="flex gap-2">

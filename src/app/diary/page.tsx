@@ -217,10 +217,10 @@ export default function DiaryPage() {
             </div>
             <h3 className="text-xl font-bold font-[family-name:var(--font-display)] text-text-primary mb-2">
               {filter === 'mine'
-                ? 'Your diary is empty — time to log some hours!'
+                ? 'Your diary is empty. Time to log some hours!'
                 : filter === 'following'
                   ? "Follow some gamers to see what they're playing"
-                  : "No one's logged sessions yet — be the first!"}
+                  : "No one's logged sessions yet. Be the first!"}
             </h3>
             <p className="text-sm text-text-secondary mb-6">
               {filter === 'mine'

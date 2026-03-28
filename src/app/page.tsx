@@ -367,7 +367,7 @@ function HeroSection({ games }: { games: GameCover[] }) {
             transition={{ duration: 0.6, delay: 0.8, ease: [0.4, 0, 0.2, 1] }}
           >
             <Link
-              href="/games"
+              href="/discover"
               className="group px-8 py-4 liquid-button text-surface font-bold text-lg rounded-lg"
             >
               <span className="flex items-center justify-center gap-2">
@@ -843,7 +843,7 @@ function FeaturesSection({ games }: { games: GameCover[] }) {
                 </div>
                 <span className="text-xs text-acid font-[family-name:var(--font-mono)] px-3 py-1 bg-acid/[0.06] rounded-full border border-acid/10">Explore</span>
               </div>
-              <p className="text-white/30 text-xs mb-4">AAA blockbusters, cult classics, fresh releases — all rated by real players</p>
+              <p className="text-white/30 text-xs mb-4">AAA blockbusters, cult classics, fresh releases; all rated by real players</p>
 
               <div className="flex gap-3 overflow-hidden">
                 {(games.length > 0 ? games.slice(0, 8) : []).map((game, i) => (
@@ -902,7 +902,7 @@ function ContentSection({ games }: { games: GameCover[] }) {
     { title: 'Why This Game Deserves a 10/10', views: '12K', duration: '14:22', isNew: true },
     { title: 'Top 10 Games You NEED to Play in 2026', views: '8.5K', duration: '18:45', isNew: true },
     { title: 'Why Elden Ring Changed Gaming Forever', views: '15K', duration: '22:10', isNew: false },
-    { title: 'Hades vs Dead Cells — The Ultimate Comparison', views: '9.2K', duration: '11:33', isNew: false },
+    { title: 'Hades vs Dead Cells: The Ultimate Comparison', views: '9.2K', duration: '11:33', isNew: false },
   ];
 
   return (
@@ -955,17 +955,17 @@ function ContentSection({ games }: { games: GameCover[] }) {
             </div>
 
             <div className="flex flex-wrap gap-2 sm:gap-3">
-              <a href="https://youtube.com/@jeggy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/[0.04] border border-white/10 text-white/70 rounded-full text-xs sm:text-sm font-semibold hover:bg-white/[0.08] transition-colors duration-300">
+              <a href="https://www.youtube.com/@Jeggyapp" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/[0.04] border border-white/10 text-white/70 rounded-full text-xs sm:text-sm font-semibold hover:bg-white/[0.08] transition-colors duration-300">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/Youtube_logo (1).png" alt="YouTube" className="w-4 h-4 sm:w-5 sm:h-5 object-contain" />
                 YouTube
               </a>
-              <a href="https://tiktok.com/@jeggy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/[0.04] border border-white/10 text-white/70 rounded-full text-xs sm:text-sm font-semibold hover:bg-white/[0.08] transition-colors duration-300">
+              <a href="https://www.tiktok.com/@jeggy.app" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/[0.04] border border-white/10 text-white/70 rounded-full text-xs sm:text-sm font-semibold hover:bg-white/[0.08] transition-colors duration-300">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/tiktoklogo.webp" alt="TikTok" className="w-4 h-4 sm:w-5 sm:h-5 object-contain" />
                 TikTok
               </a>
-              <a href="https://instagram.com/jeggy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/[0.04] border border-white/10 text-white/70 rounded-full text-xs sm:text-sm font-semibold hover:bg-white/[0.08] transition-colors duration-300">
+              <a href="https://instagram.com/jeggy.app" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/[0.04] border border-white/10 text-white/70 rounded-full text-xs sm:text-sm font-semibold hover:bg-white/[0.08] transition-colors duration-300">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/Instagram_logo_2022.svg.png" alt="Instagram" className="w-4 h-4 sm:w-5 sm:h-5 object-contain" />
                 Instagram
@@ -1118,7 +1118,7 @@ function EsportsSection({ games }: { games: GameCover[] }) {
             className="text-lg md:text-xl text-white/35 mb-12 max-w-2xl mx-auto leading-relaxed"
             variants={fadeUp}
           >
-            Community tournaments, live brackets, and real-time streaming — all on Jeggy.
+            Community tournaments, live brackets, and real-time streaming; all on Jeggy.
             Your gaming dream, from signup to grand finals.
           </motion.p>
 
@@ -1149,7 +1149,7 @@ function EsportsSection({ games }: { games: GameCover[] }) {
             <div className="inline-flex items-center gap-3 px-6 py-3 glass-slab rounded-full">
               <div className="w-2 h-2 rounded-full bg-indigo animate-pulse" />
               <span className="text-sm text-white/40 font-[family-name:var(--font-mono)]">
-                Tournament platform launching soon — stay tuned
+                Tournament platform launching soon, stay tuned
               </span>
             </div>
           </motion.div>

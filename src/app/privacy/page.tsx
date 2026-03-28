@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Privacy Policy - Jeggy',
+  title: 'Privacy Policy',
   description: 'Learn how Jeggy collects, uses, and protects your personal information.',
 };
 

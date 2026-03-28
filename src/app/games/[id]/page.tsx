@@ -511,7 +511,7 @@ export default function GamePage({ params }: GamePageProps) {
                     totalRatings={game.total_ratings}
                   />
                 ) : (
-                  <p className="text-text-muted text-sm">No ratings yet — be the first!</p>
+                  <p className="text-text-muted text-sm">No ratings yet. Be the first!</p>
                 )}
 
                 {/* Game modes */}
@@ -968,7 +968,7 @@ export default function GamePage({ params }: GamePageProps) {
               </div>
             ) : (
               <p className="text-sm text-text-muted text-center py-6">
-                No reviews yet — be the first to review this game!
+                No reviews yet. Be the first to review this game!
               </p>
             )}
           </section>

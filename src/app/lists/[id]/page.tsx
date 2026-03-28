@@ -388,7 +388,7 @@ export default function ListDetailPage({ params }: ListDetailPageProps) {
                     ))
                     ) : (
                       <div className="flex items-center justify-center w-full text-text-muted/40 text-xs italic py-6">
-                        — empty —
+                        empty
                       </div>
                     )}
                   </div>

@@ -143,7 +143,7 @@ export default function OnboardingPage() {
         {step === 2 && (
           <>
             <h2 className="text-3xl font-bold font-[family-name:var(--font-display)] mb-2 text-text-primary">Tell us about yourself</h2>
-            <p className="text-text-muted mb-8">Optional — helps others get to know you</p>
+            <p className="text-text-muted mb-8">Optional, helps others get to know you</p>
 
             <textarea
               value={bio}

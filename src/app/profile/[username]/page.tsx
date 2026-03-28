@@ -919,7 +919,7 @@ function RealProfile({
                     <p className="text-text-muted text-sm">
                       {isOwnProfile
                         ? gamesFilter === 'Playing' ? 'Not currently playing any games'
-                          : gamesFilter === 'Completed' ? 'No 100% completions yet — time to grind!'
+                          : gamesFilter === 'Completed' ? 'No 100% completions yet. Time to grind!'
                           : gamesFilter === 'Want to Play' ? 'Your wishlist is empty'
                           : gamesFilter === 'Dropped' ? 'No rage quits recorded'
                           : 'No games with this status yet'

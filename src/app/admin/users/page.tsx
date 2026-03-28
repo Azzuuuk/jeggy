@@ -256,7 +256,7 @@ export default function AdminUsersPage() {
             <textarea
               value={warningMessage}
               onChange={(e) => setWarningMessage(e.target.value)}
-              placeholder="Describe the issue — e.g., Your recent activity violates our community guidelines. Repeated violations may result in a ban."
+              placeholder="Describe the issue, e.g., Your recent activity violates our community guidelines. Repeated violations may result in a ban."
               className="w-full px-3 py-2 bg-bg-primary border border-border rounded-sm text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-amber-400 min-h-[100px] resize-none mb-4"
               maxLength={500}
             />

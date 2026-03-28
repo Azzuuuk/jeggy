@@ -452,7 +452,7 @@ export default function DiscoverPage() {
               <div className="text-center py-16 bg-bg-card/80 backdrop-blur-xl border border-border rounded-sm">
                 <Users className="w-12 h-12 text-text-muted mx-auto mb-4" />
                 <h3 className="text-xl font-bold font-[family-name:var(--font-display)] text-text-primary mb-2">No gamers yet</h3>
-                <p className="text-text-secondary text-sm mb-6">Rate some games and come back — we&apos;ll find your people</p>
+                <p className="text-text-secondary text-sm mb-6">Rate some games and come back. We&apos;ll find your people</p>
                 <Link href="/games" className="inline-block px-6 py-2.5 bg-accent-green hover:opacity-90 text-black rounded-sm font-medium text-sm transition-opacity">
                   Browse Games
                 </Link>

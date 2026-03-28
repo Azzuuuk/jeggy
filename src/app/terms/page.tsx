@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Terms of Service - Jeggy',
+  title: 'Terms of Service',
   description: 'Terms and conditions for using the Jeggy gaming platform.',
 };
 
