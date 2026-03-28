@@ -39,8 +39,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
         setIsRecovery(true);
-        // Keep the underlying user so updateUser() works, but hide from UI
         setUser(session?.user ?? null);
+        // Redirect to reset page regardless of where the user landed
+        window.location.replace('/reset-password');
       } else {
         setUser(session?.user ?? null);
       }
