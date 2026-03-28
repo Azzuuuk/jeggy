@@ -29,23 +29,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isRecovery, setIsRecovery] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    // Detect recovery flow from URL hash BEFORE Supabase processes it
+    // Supabase sends: https://jeggy.app/#access_token=...&type=recovery
+    const hash = window.location.hash;
+    const isRecoveryFlow = hash.includes('type=recovery');
+
+    if (isRecoveryFlow) {
+      setIsRecovery(true);
+    }
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'PASSWORD_RECOVERY') {
+      if (event === 'PASSWORD_RECOVERY' || (isRecoveryFlow && event === 'SIGNED_IN')) {
         setIsRecovery(true);
         setUser(session?.user ?? null);
-        // Redirect to reset page regardless of where the user landed
+        setLoading(false);
         window.location.replace('/reset-password');
-      } else {
-        setUser(session?.user ?? null);
+        return;
       }
+
+      setUser(session?.user ?? null);
     });
+
+    // Only resolve session for non-recovery flows
+    if (!isRecoveryFlow) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setUser(session?.user ?? null);
+        setLoading(false);
+      });
+    }
 
     return () => subscription.unsubscribe();
   }, []);
