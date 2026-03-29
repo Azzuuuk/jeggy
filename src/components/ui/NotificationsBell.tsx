@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Bell } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 
@@ -30,65 +29,33 @@ export function NotificationsBell() {
     if (!user) return;
     setLoading(true);
 
-    const { data } = await supabase
-      .from('notifications')
-      .select('id, user_id, actor_id, type, target_id, target_type, message, is_read, created_at')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(20);
+    try {
+      const res = await fetch(`/api/notifications?userId=${user.id}`);
+      const data = await res.json();
 
-    if (data && data.length > 0) {
-      // Fetch actor usernames
-      const actorIds = [...new Set(data.map(n => n.actor_id))];
-      const { data: profiles } = await supabase
-        .from('profiles')
-        .select('id, username')
-        .in('id', actorIds);
-
-      const usernameMap: Record<string, string> = {};
-      profiles?.forEach(p => { usernameMap[p.id] = p.username; });
-
-      const enriched = data.map(n => ({
-        ...n,
-        actor_username: usernameMap[n.actor_id] || 'Someone',
-      }));
-
-      setNotifications(enriched);
-      setUnreadCount(enriched.filter(n => !n.is_read).length);
-    } else {
-      setNotifications([]);
-      setUnreadCount(0);
+      if (res.ok && data.notifications) {
+        setNotifications(data.notifications);
+        setUnreadCount(data.notifications.filter((n: Notification) => !n.is_read).length);
+      } else {
+        setNotifications([]);
+        setUnreadCount(0);
+      }
+    } catch (err) {
+      console.error('Fetch notifications error:', err);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, [user]);
 
   useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications]);
 
-  // Real-time subscription for new notifications
+  // Poll for new notifications every 15 seconds
   useEffect(() => {
     if (!user) return;
-
-    const channel = supabase
-      .channel('notifications')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'notifications',
-          filter: `user_id=eq.${user.id}`,
-        },
-        () => {
-          fetchNotifications();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    const interval = setInterval(fetchNotifications, 15000);
+    return () => clearInterval(interval);
   }, [user, fetchNotifications]);
 
   // Close dropdown on outside click
@@ -104,14 +71,17 @@ export function NotificationsBell() {
 
   const markAllRead = async () => {
     if (!user || unreadCount === 0) return;
-    await supabase
-      .from('notifications')
-      .update({ is_read: true })
-      .eq('user_id', user.id)
-      .eq('is_read', false);
-
-    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
-    setUnreadCount(0);
+    try {
+      await fetch('/api/notifications', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id }),
+      });
+      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+      setUnreadCount(0);
+    } catch (err) {
+      console.error('Mark all read error:', err);
+    }
   };
 
   const getNotificationLink = (n: Notification): string => {

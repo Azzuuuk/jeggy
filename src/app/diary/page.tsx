@@ -140,21 +140,42 @@ export default function DiaryPage() {
 
   const handleLike = async (sessionId: string, isLiked: boolean) => {
     if (!user) return;
-    // Find session owner
     const session = sessions.find(s => s.id === sessionId);
+
     // Optimistic update
     setSessions((prev) =>
       prev.map((s) =>
         s.id === sessionId
-          ? { ...s, liked_by_me: !isLiked, likes_count: s.likes_count + (isLiked ? -1 : 1) }
+          ? { ...s, liked_by_me: !isLiked, likes_count: Math.max(0, (s.likes_count || 0) + (isLiked ? -1 : 1)) }
           : s,
       ),
     );
+
     try {
       if (isLiked) {
-        await supabase.from('session_likes').delete().eq('user_id', user.id).eq('session_id', sessionId);
+        const res = await fetch('/api/session-likes', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: user.id, sessionId }),
+        });
+        const data = await res.json();
+        if (res.ok && data.likes_count !== undefined) {
+          setSessions((prev) =>
+            prev.map((s) => s.id === sessionId ? { ...s, likes_count: data.likes_count } : s)
+          );
+        }
       } else {
-        await supabase.from('session_likes').insert({ user_id: user.id, session_id: sessionId });
+        const res = await fetch('/api/session-likes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: user.id, sessionId }),
+        });
+        const data = await res.json();
+        if (res.ok && data.likes_count !== undefined) {
+          setSessions((prev) =>
+            prev.map((s) => s.id === sessionId ? { ...s, likes_count: data.likes_count } : s)
+          );
+        }
 
         // Send notification to session owner
         if (session && session.user_id !== user.id) {
