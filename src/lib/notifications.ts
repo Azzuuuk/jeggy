@@ -1,8 +1,7 @@
-import { supabase } from '@/lib/supabase';
-
 export type NotificationType =
   | 'follow'
   | 'like_list'
+  | 'like_session'
   | 'comment_list'
   | 'report_resolved'
   | 'content_removed'
@@ -26,14 +25,19 @@ export async function createNotification({
 }) {
   if (userId === actorId) return;
 
-  await supabase.from('notifications').insert({
-    user_id: userId,
-    actor_id: actorId,
-    type,
-    target_id: targetId || null,
-    target_type: targetType || null,
-    message,
-  });
+  try {
+    const res = await fetch('/api/notifications', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, actorId, type, targetId, targetType, message }),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      console.error('Notification API error:', data.error || res.status);
+    }
+  } catch (err) {
+    console.error('Failed to create notification:', err);
+  }
 }
 
 /** Admin notifications bypass the self-check */
@@ -52,12 +56,17 @@ export async function createAdminNotification({
   targetType?: string;
   message: string;
 }) {
-  await supabase.from('notifications').insert({
-    user_id: userId,
-    actor_id: adminId,
-    type,
-    target_id: targetId || null,
-    target_type: targetType || null,
-    message,
-  });
+  try {
+    const res = await fetch('/api/notifications', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, actorId: adminId, type, targetId, targetType, message }),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      console.error('Admin notification API error:', data.error || res.status);
+    }
+  } catch (err) {
+    console.error('Failed to create admin notification:', err);
+  }
 }

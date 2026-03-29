@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import { Clock, Heart, Calendar, Monitor, BookOpen, Users, Search as SearchIcon, Gamepad2 } from 'lucide-react';
 import { ReportButton } from '@/components/ReportButton';
+import { createNotification } from '@/lib/notifications';
 
 interface GameInfo {
   id: number;
@@ -139,6 +140,8 @@ export default function DiaryPage() {
 
   const handleLike = async (sessionId: string, isLiked: boolean) => {
     if (!user) return;
+    // Find session owner
+    const session = sessions.find(s => s.id === sessionId);
     // Optimistic update
     setSessions((prev) =>
       prev.map((s) =>
@@ -152,6 +155,25 @@ export default function DiaryPage() {
         await supabase.from('session_likes').delete().eq('user_id', user.id).eq('session_id', sessionId);
       } else {
         await supabase.from('session_likes').insert({ user_id: user.id, session_id: sessionId });
+
+        // Send notification to session owner
+        if (session && session.user_id !== user.id) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('username')
+            .eq('id', user.id)
+            .single();
+          const username = profile?.username || 'Someone';
+          const gameName = session.game?.name || 'a game';
+          createNotification({
+            userId: session.user_id,
+            actorId: user.id,
+            type: 'like_session',
+            targetId: sessionId,
+            targetType: 'session',
+            message: `${username} liked your ${gameName} session`,
+          });
+        }
       }
     } catch {
       fetchSessions();

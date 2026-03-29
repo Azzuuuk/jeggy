@@ -116,6 +116,7 @@ export function NotificationsBell() {
 
   const getNotificationLink = (n: Notification): string => {
     if (n.type === 'follow') return `/profile/${n.actor_username}`;
+    if (n.type === 'like_session') return '/diary';
     if (n.target_type === 'list' && n.target_id) return `/lists/${n.target_id}`;
     if (n.target_type === 'game' && n.target_id) return `/games/${n.target_id}`;
     if (n.target_type === 'profile' && n.target_id) return `/profile/${n.target_id}`;
@@ -126,6 +127,7 @@ export function NotificationsBell() {
     switch (type) {
       case 'follow': return '👤';
       case 'like_list': return '❤️';
+      case 'like_session': return '❤️';
       case 'comment_list': return '💬';
       case 'report_resolved': return '📋';
       case 'content_removed': return '🚫';
