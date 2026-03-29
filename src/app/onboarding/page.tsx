@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
-import { Gamepad2, Monitor, Smartphone, Search, X } from 'lucide-react';
+import { Gamepad2, Monitor, Smartphone, Search, X, AtSign, AlertCircle } from 'lucide-react';
 
 const platformOptions = [
   { id: 'PC', label: 'PC', icon: <Monitor size={20} /> },
@@ -19,6 +19,10 @@ const platformOptions = [
 
 export default function OnboardingPage() {
   const [step, setStep] = useState(1);
+  const [username, setUsername] = useState('');
+  const [usernameError, setUsernameError] = useState('');
+  const [checkingUsername, setCheckingUsername] = useState(false);
+  const [currentUsername, setCurrentUsername] = useState('');
   const [platforms, setPlatforms] = useState<string[]>([]);
   const [bio, setBio] = useState('');
   const [favoriteGames, setFavoriteGames] = useState<{ id: number; name: string; cover_url: string | null }[]>([]);
@@ -29,9 +33,56 @@ export default function OnboardingPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
 
+  // Load the current (auto-generated) username
+  useEffect(() => {
+    if (!user) return;
+    supabase.from('profiles').select('username').eq('id', user.id).single().then(({ data }) => {
+      if (data?.username) {
+        setCurrentUsername(data.username);
+        setUsername(data.username);
+      }
+    });
+  }, [user]);
+
   useEffect(() => {
     if (!authLoading && !user) router.push('/login');
   }, [user, authLoading, router]);
+
+  // Validate username with debounce
+  useEffect(() => {
+    if (!username || username === currentUsername) {
+      setUsernameError('');
+      return;
+    }
+    if (username.length < 3) {
+      setUsernameError('Must be at least 3 characters');
+      return;
+    }
+    if (username.length > 20) {
+      setUsernameError('Must be 20 characters or fewer');
+      return;
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      setUsernameError('Only letters, numbers, and underscores');
+      return;
+    }
+
+    setCheckingUsername(true);
+    const timer = setTimeout(async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('username', username)
+        .maybeSingle();
+      if (data && data.id !== user?.id) {
+        setUsernameError('Username is already taken');
+      } else {
+        setUsernameError('');
+      }
+      setCheckingUsername(false);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [username, currentUsername, user?.id]);
 
   const togglePlatform = (platform: string) => {
     setPlatforms((prev) =>
@@ -59,6 +110,23 @@ export default function OnboardingPage() {
     setSearchResults([]);
   };
 
+  const handleUsernameNext = async () => {
+    if (!user || usernameError || checkingUsername) return;
+    if (username !== currentUsername) {
+      setLoading(true);
+      const { error } = await supabase
+        .from('profiles')
+        .update({ username, updated_at: new Date().toISOString() })
+        .eq('id', user.id);
+      setLoading(false);
+      if (error) {
+        setUsernameError('Failed to save username. Try another.');
+        return;
+      }
+    }
+    setStep(2);
+  };
+
   const handleComplete = async () => {
     if (!user) return;
     setLoading(true);
@@ -69,7 +137,6 @@ export default function OnboardingPage() {
         updated_at: new Date().toISOString(),
       };
 
-      // Save Mount Rushmore if user picked favorites
       if (favoriteGames.length > 0) {
         updates.mount_rushmore_games = favoriteGames.slice(0, 4).map(g => g.id.toString());
       }
@@ -80,7 +147,6 @@ export default function OnboardingPage() {
         .eq('id', user.id);
       if (error) throw error;
 
-      // Redirect to taste quiz to quickly rate games
       router.push('/discover/taste-quiz');
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -91,7 +157,8 @@ export default function OnboardingPage() {
 
   if (authLoading) return null;
 
-  const totalSteps = 3;
+  const totalSteps = 4;
+  const usernameValid = username.length >= 3 && username.length <= 20 && /^[a-zA-Z0-9_]+$/.test(username) && !usernameError && !checkingUsername;
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 -mt-14">
@@ -108,7 +175,60 @@ export default function OnboardingPage() {
           ))}
         </div>
 
+        {/* Step 1: Choose username */}
         {step === 1 && (
+          <>
+            <h2 className="text-3xl font-bold font-[family-name:var(--font-display)] mb-2 text-text-primary">Choose your username</h2>
+            <p className="text-text-muted mb-6">This is your permanent identity on Jeggy. Choose wisely!</p>
+
+            <div className="relative mb-2">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted">
+                <AtSign size={16} />
+              </div>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                className={`w-full pl-10 pr-4 py-3 bg-bg-card/80 backdrop-blur-xl border rounded-sm text-text-primary placeholder-text-muted focus:outline-none transition-all duration-300 ${
+                  usernameError ? 'border-danger focus:border-danger' : 'border-border focus:border-accent-green'
+                }`}
+                placeholder="nightowlgamer"
+                maxLength={20}
+                autoFocus
+              />
+            </div>
+
+            <div className="flex items-center justify-between mb-6 min-h-[24px]">
+              {usernameError ? (
+                <span className="text-xs text-danger flex items-center gap-1">
+                  <AlertCircle size={12} /> {usernameError}
+                </span>
+              ) : checkingUsername ? (
+                <span className="text-xs text-text-muted">Checking availability...</span>
+              ) : username.length >= 3 && !usernameError ? (
+                <span className="text-xs text-accent-green">✓ Available</span>
+              ) : (
+                <span className="text-xs text-text-muted">3 to 20 characters, letters, numbers, underscores</span>
+              )}
+              <span className="text-xs text-text-muted">{username.length}/20</span>
+            </div>
+
+            <p className="text-xs text-text-muted/70 mb-6">
+              Your username cannot be changed later. Your display name can be updated anytime from settings.
+            </p>
+
+            <button
+              onClick={handleUsernameNext}
+              disabled={!usernameValid || loading}
+              className="w-full py-3 bg-accent-green hover:bg-accent-green-hover disabled:opacity-50 text-black font-bold rounded-sm transition-all duration-300"
+            >
+              {loading ? 'Saving...' : 'Continue'}
+            </button>
+          </>
+        )}
+
+        {/* Step 2: Platforms */}
+        {step === 2 && (
           <>
             <h2 className="text-3xl font-bold font-[family-name:var(--font-display)] mb-2 text-text-primary">What platforms do you game on?</h2>
             <p className="text-text-muted mb-8">Select all that apply</p>
@@ -130,17 +250,26 @@ export default function OnboardingPage() {
               ))}
             </div>
 
-            <button
-              onClick={() => setStep(2)}
-              disabled={platforms.length === 0}
-              className="w-full py-3 bg-accent-green hover:bg-accent-green-hover disabled:opacity-50 text-black font-bold rounded-sm transition-all duration-300"
-            >
-              Continue
-            </button>
+            <div className="flex gap-4">
+              <button
+                onClick={() => setStep(1)}
+                className="flex-1 py-3 bg-bg-elevated hover:bg-border text-text-secondary font-bold rounded-sm transition-all duration-300"
+              >
+                Back
+              </button>
+              <button
+                onClick={() => setStep(3)}
+                disabled={platforms.length === 0}
+                className="flex-1 py-3 bg-accent-green hover:bg-accent-green-hover disabled:opacity-50 text-black font-bold rounded-sm transition-all duration-300"
+              >
+                Continue
+              </button>
+            </div>
           </>
         )}
 
-        {step === 2 && (
+        {/* Step 3: Bio */}
+        {step === 3 && (
           <>
             <h2 className="text-3xl font-bold font-[family-name:var(--font-display)] mb-2 text-text-primary">Tell us about yourself</h2>
             <p className="text-text-muted mb-8">Optional, helps others get to know you</p>
@@ -156,13 +285,13 @@ export default function OnboardingPage() {
 
             <div className="flex gap-4">
               <button
-                onClick={() => setStep(1)}
+                onClick={() => setStep(2)}
                 className="flex-1 py-3 bg-bg-elevated hover:bg-border text-text-secondary font-bold rounded-sm transition-all duration-300"
               >
                 Back
               </button>
               <button
-                onClick={() => setStep(3)}
+                onClick={() => setStep(4)}
                 className="flex-1 py-3 bg-accent-green hover:bg-accent-green-hover text-black font-bold rounded-sm transition-all duration-300"
               >
                 Continue
@@ -171,7 +300,8 @@ export default function OnboardingPage() {
           </>
         )}
 
-        {step === 3 && (
+        {/* Step 4: Favorite games */}
+        {step === 4 && (
           <>
             <h2 className="text-3xl font-bold font-[family-name:var(--font-display)] mb-2 text-text-primary">What are your favorite games?</h2>
             <p className="text-text-muted mb-6">Add up to 10 games to help us understand your taste (optional)</p>
@@ -241,7 +371,7 @@ export default function OnboardingPage() {
 
             <div className="flex gap-4">
               <button
-                onClick={() => setStep(2)}
+                onClick={() => setStep(3)}
                 className="flex-1 py-3 bg-bg-elevated hover:bg-border text-text-secondary font-bold rounded-sm transition-all duration-300"
               >
                 Back

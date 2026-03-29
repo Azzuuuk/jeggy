@@ -12,9 +12,10 @@ interface QuickLogModalProps {
   isOpen: boolean;
   onClose: () => void;
   game?: { id: number; name: string; cover_url?: string | null; slug?: string };
+  onSuccess?: () => void;
 }
 
-export default function QuickLogModal({ isOpen, onClose, game: initialGame }: QuickLogModalProps) {
+export default function QuickLogModal({ isOpen, onClose, game: initialGame, onSuccess }: QuickLogModalProps) {
   const { user } = useAuth();
   const [selectedGame, setSelectedGame] = useState<SupabaseGame | null>(null);
   const [query, setQuery] = useState('');
@@ -100,10 +101,10 @@ export default function QuickLogModal({ isOpen, onClose, game: initialGame }: Qu
 
       if (error) throw error;
       setSaved(true);
+      onSuccess?.();
       setTimeout(() => {
         onClose();
-        window.location.reload();
-      }, 600);
+      }, 1200);
     } catch (err: any) {
       console.error('Error saving:', err?.message || err?.code || JSON.stringify(err));
       alert('Failed to save: ' + (err?.message || 'Unknown error'));

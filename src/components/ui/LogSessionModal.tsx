@@ -24,6 +24,7 @@ export default function LogSessionModal({ isOpen, onClose, gameId, gameName, gam
   const [platform, setPlatform] = useState('PC');
   const [isPublic, setIsPublic] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   if (!isOpen) return null;
 
@@ -54,13 +55,16 @@ export default function LogSessionModal({ isOpen, onClose, gameId, gameName, gam
 
       if (error) throw error;
 
-      // Reset
-      setHours('1');
-      setSessionNote('');
-      setPlatform('PC');
-      setSessionDate(new Date().toISOString().split('T')[0]);
-      onClose();
-      onLogged?.();
+      setSaved(true);
+      setTimeout(() => {
+        setHours('1');
+        setSessionNote('');
+        setPlatform('PC');
+        setSessionDate(new Date().toISOString().split('T')[0]);
+        setSaved(false);
+        onClose();
+        onLogged?.();
+      }, 1200);
     } catch (err) {
       console.error('Error logging session:', err);
     } finally {
@@ -184,10 +188,10 @@ export default function LogSessionModal({ isOpen, onClose, gameId, gameName, gam
             </button>
             <button
               type="submit"
-              disabled={saving}
-              className="flex-1 py-2.5 bg-accent-green hover:bg-accent-green-hover disabled:opacity-50 text-black rounded-sm text-sm font-bold transition-all duration-300"
+              disabled={saving || saved}
+              className={`flex-1 py-2.5 rounded-sm text-sm font-bold transition-all duration-300 ${saved ? 'bg-accent-green text-black' : 'bg-accent-green hover:bg-accent-green-hover disabled:opacity-50 text-black'}`}
             >
-              {saving ? 'Logging...' : `Log ${hours}h`}
+              {saved ? '✓ Logged!' : saving ? 'Logging...' : `Log ${hours}h`}
             </button>
           </div>
         </form>

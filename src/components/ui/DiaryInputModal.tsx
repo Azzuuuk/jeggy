@@ -9,11 +9,12 @@ import { SupabaseGame } from '@/lib/types';
 interface DiaryInputModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
 const PLATFORMS = ['PC', 'PlayStation 5', 'PlayStation 4', 'Xbox Series X|S', 'Xbox One', 'Nintendo Switch', 'Mobile', 'Steam Deck'];
 
-export default function DiaryInputModal({ isOpen, onClose }: DiaryInputModalProps) {
+export default function DiaryInputModal({ isOpen, onClose, onSuccess }: DiaryInputModalProps) {
   const { user } = useAuth();
   const [selectedGame, setSelectedGame] = useState<SupabaseGame | null>(null);
   const [query, setQuery] = useState('');
@@ -25,6 +26,7 @@ export default function DiaryInputModal({ isOpen, onClose }: DiaryInputModalProp
   const [platform, setPlatform] = useState('PC');
   const [isPublic, setIsPublic] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
@@ -36,6 +38,7 @@ export default function DiaryInputModal({ isOpen, onClose }: DiaryInputModalProp
       setPlatform('PC');
       setSessionDate(new Date().toISOString().split('T')[0]);
       setIsPublic(true);
+      setSaved(false);
     }
   }, [isOpen]);
 
@@ -78,9 +81,10 @@ export default function DiaryInputModal({ isOpen, onClose }: DiaryInputModalProp
         });
 
       if (error) throw error;
-      onClose();
+      setSaved(true);
+      onSuccess?.();
+      setTimeout(() => onClose(), 1200);
     } catch (err: unknown) {
-      // PostgrestError has message, details, hint, code but isn't an Error instance
       const pgErr = err as { message?: string; details?: string; hint?: string; code?: string };
       const msg = pgErr?.message || pgErr?.details || (err instanceof Error ? err.message : JSON.stringify(err));
       console.error('Error logging session:', msg, pgErr?.code, pgErr?.hint);
@@ -206,9 +210,9 @@ export default function DiaryInputModal({ isOpen, onClose }: DiaryInputModalProp
                 className="flex-1 py-2.5 bg-bg-elevated text-text-secondary rounded-sm text-sm font-medium hover:text-text-primary transition-all duration-300">
                 Cancel
               </button>
-              <button type="submit" disabled={saving}
-                className="flex-1 py-2.5 bg-accent-green hover:bg-accent-green-hover disabled:opacity-50 text-black rounded-sm text-sm font-bold transition-all duration-300">
-                {saving ? 'Logging...' : `Log ${hours}h`}
+              <button type="submit" disabled={saving || saved}
+                className={`flex-1 py-2.5 rounded-sm text-sm font-bold transition-all duration-300 ${saved ? 'bg-accent-green text-black' : 'bg-accent-green hover:bg-accent-green-hover disabled:opacity-50 text-black'}`}>
+                {saved ? '✓ Logged!' : saving ? 'Logging...' : `Log ${hours}h`}
               </button>
             </div>
           </form>

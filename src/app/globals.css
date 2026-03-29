@@ -496,3 +496,9 @@ main {
 .stat-hover:hover {
   transform: translateY(-3px);
 }
+
+/* Success toast slide-in */
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}

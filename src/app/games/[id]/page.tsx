@@ -13,6 +13,7 @@ import { Clock, Users, Bookmark, Play, Check, X, Share2, PenLine, ChevronDown, H
 import { createActivity, removeActivities } from '@/lib/activities';
 import dynamic from 'next/dynamic';
 import { ReportButton } from '@/components/ReportButton';
+import SuccessToast from '@/components/ui/SuccessToast';
 
 const LogSessionModal = dynamic(() => import('@/components/ui/LogSessionModal'), { ssr: false });
 const SubmitCompletionTimeModal = dynamic(() => import('@/components/SubmitCompletionTimeModal'), { ssr: false });
@@ -58,6 +59,7 @@ export default function GamePage({ params }: GamePageProps) {
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
   const [reviews, setReviews] = useState<{ id: string; username: string; user_id: string; rating: number | null; review: string; created_at: string }[]>([]);
   const [logSessionOpen, setLogSessionOpen] = useState(false);
   const [totalHours, setTotalHours] = useState(0);
@@ -335,6 +337,8 @@ export default function GamePage({ params }: GamePageProps) {
       }
 
       setTimeout(() => { fetchGame(); fetchReviews(); }, 500);
+      setJustSaved(true);
+      setTimeout(() => setJustSaved(false), 2000);
     } catch (err) {
       console.error('Error saving:', err);
     } finally {
@@ -431,6 +435,7 @@ export default function GamePage({ params }: GamePageProps) {
 
   return (
     <div className="min-h-screen">
+      <SuccessToast message="Saved!" show={justSaved} />
       {/* Fixed blurred cover background */}
       <div className="fixed inset-0 -z-10">
         {game.cover_url && (

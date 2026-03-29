@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Gamepad2, ListOrdered, BookOpen, X } from 'lucide-react';
 import QuickLogModal from './QuickLogModal';
 import DiaryInputModal from './DiaryInputModal';
+import SuccessToast from './SuccessToast';
 
 interface AddMenuProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ export default function AddMenu({ isOpen, onClose }: AddMenuProps) {
   const router = useRouter();
   const [quickLogOpen, setQuickLogOpen] = useState(false);
   const [diaryOpen, setDiaryOpen] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
 
   if (!isOpen && !quickLogOpen && !diaryOpen) return null;
 
@@ -88,8 +90,9 @@ export default function AddMenu({ isOpen, onClose }: AddMenuProps) {
       )}
 
       {/* Sub-modals */}
-      <QuickLogModal isOpen={quickLogOpen} onClose={() => setQuickLogOpen(false)} />
-      <DiaryInputModal isOpen={diaryOpen} onClose={() => setDiaryOpen(false)} />
+      <QuickLogModal isOpen={quickLogOpen} onClose={() => setQuickLogOpen(false)} onSuccess={() => setToast('Game logged successfully')} />
+      <DiaryInputModal isOpen={diaryOpen} onClose={() => setDiaryOpen(false)} onSuccess={() => setToast('Session logged successfully')} />
+      <SuccessToast message={toast || ''} show={!!toast} onDone={() => setToast(null)} />
     </>
   );
 }

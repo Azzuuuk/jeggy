@@ -48,6 +48,7 @@ export default function EditProfileModal({ profile, isOpen, onClose, onSave }: E
     steam: profile.gamertags?.steam || '',
   });
   const [loading, setLoading] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
 
   // Avatar state
@@ -113,7 +114,11 @@ export default function EditProfileModal({ profile, isOpen, onClose, onSave }: E
     setLoading(false);
 
     if (result.success) {
-      onClose();
+      setSaved(true);
+      setTimeout(() => {
+        setSaved(false);
+        onClose();
+      }, 1000);
     } else {
       setError(result.error || 'Failed to update profile');
     }
@@ -311,10 +316,10 @@ export default function EditProfileModal({ profile, isOpen, onClose, onSave }: E
             </button>
             <button
               type="submit"
-              disabled={loading}
-              className="flex-1 py-3 bg-accent-green hover:bg-accent-green-hover disabled:opacity-50 text-black font-semibold rounded-sm transition-all duration-300"
+              disabled={loading || saved}
+              className={`flex-1 py-3 rounded-sm font-semibold transition-all duration-300 ${saved ? 'bg-accent-green text-black' : 'bg-accent-green hover:bg-accent-green-hover disabled:opacity-50 text-black'}`}
             >
-              {loading ? 'Saving...' : 'Save Changes'}
+              {saved ? '✓ Saved!' : loading ? 'Saving...' : 'Save Changes'}
             </button>
           </div>
         </form>
