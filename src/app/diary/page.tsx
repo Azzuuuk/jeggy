@@ -27,6 +27,7 @@ interface SessionData {
   created_at: string;
   username: string;
   display_name: string | null;
+  avatar_url: string | null;
   game?: GameInfo;
   liked_by_me?: boolean;
 }
@@ -88,7 +89,7 @@ export default function DiaryPage() {
       const userIds = [...new Set(data.map((s) => s.user_id))];
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, username, display_name')
+        .select('id, username, display_name, avatar_url')
         .in('id', userIds);
       const profileMap = new Map(profiles?.map((p) => [p.id, p]) || []);
 
@@ -118,6 +119,7 @@ export default function DiaryPage() {
           ...s,
           username: prof?.username || 'unknown',
           display_name: prof?.display_name || null,
+          avatar_url: prof?.avatar_url || null,
           game: gameMap.get(s.game_id) || undefined,
           liked_by_me: myLikes.has(s.id),
         };
@@ -245,9 +247,14 @@ export default function DiaryPage() {
                 <div className="flex items-start gap-3 mb-4">
                   <Link
                     href={`/profile/${session.username}`}
-                    className="w-9 h-9 rounded-full bg-gradient-to-br from-accent-green to-accent-teal flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
+                    className="w-9 h-9 rounded-full bg-gradient-to-br from-accent-green to-accent-teal flex items-center justify-center text-sm font-bold text-white flex-shrink-0 overflow-hidden"
                   >
-                    {(session.display_name || session.username).charAt(0).toUpperCase()}
+                    {session.avatar_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={session.avatar_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      (session.display_name || session.username).charAt(0).toUpperCase()
+                    )}
                   </Link>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 flex-wrap text-sm">

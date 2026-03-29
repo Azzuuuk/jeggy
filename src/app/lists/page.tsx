@@ -15,6 +15,7 @@ interface ListSummary {
   created_at: string;
   likes_count: number;
   creator_username: string;
+  creator_avatar_url: string | null;
 }
 
 type SortOption = 'recent' | 'likes' | 'games';
@@ -33,7 +34,7 @@ export default function BrowseListsPage() {
       try {
         let query = supabase
           .from('lists')
-          .select('id, title, description, game_ids, ranking_style, created_at, likes_count, profiles!lists_user_id_fkey(username)')
+          .select('id, title, description, game_ids, ranking_style, created_at, likes_count, profiles!lists_user_id_fkey(username, avatar_url)')
           .eq('is_public', true);
 
         if (searchQuery.length >= 2) {
@@ -55,6 +56,7 @@ export default function BrowseListsPage() {
           ...row,
           likes_count: row.likes_count || 0,
           creator_username: row.profiles?.username ?? 'unknown',
+          creator_avatar_url: row.profiles?.avatar_url ?? null,
         }));
 
         if (sortBy === 'games') {
@@ -206,7 +208,17 @@ export default function BrowseListsPage() {
                       <p className="text-sm text-text-secondary mt-1 line-clamp-1">{list.description}</p>
                     )}
                     <div className="flex items-center justify-between mt-3 text-xs text-text-muted">
-                      <span>@{list.creator_username}</span>
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-4 h-4 rounded-full bg-accent-orange flex items-center justify-center text-[8px] font-bold text-black flex-shrink-0 overflow-hidden">
+                          {list.creator_avatar_url ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={list.creator_avatar_url} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            list.creator_username.charAt(0).toUpperCase()
+                          )}
+                        </div>
+                        <span>@{list.creator_username}</span>
+                      </div>
                       <span>{list.game_ids?.length || 0} games</span>
                     </div>
                     <div className="flex items-center justify-between mt-1.5 text-xs text-text-muted">

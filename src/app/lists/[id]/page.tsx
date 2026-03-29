@@ -23,6 +23,7 @@ interface ListData {
   created_at: string;
   likes_count: number;
   creator_username: string;
+  creator_avatar_url: string | null;
 }
 
 interface Comment {
@@ -31,6 +32,7 @@ interface Comment {
   content: string;
   created_at: string;
   username: string;
+  avatar_url: string | null;
 }
 
 // TierMaker-style colors: warm→cool gradient
@@ -70,7 +72,7 @@ export default function ListDetailPage({ params }: ListDetailPageProps) {
       try {
         const { data: listData, error: listError } = await supabase
           .from('lists')
-          .select('*, profiles!lists_user_id_fkey(username)')
+          .select('*, profiles!lists_user_id_fkey(username, avatar_url)')
           .eq('id', id)
           .single();
 
@@ -83,6 +85,7 @@ export default function ListDetailPage({ params }: ListDetailPageProps) {
           ...listData,
           likes_count: listData.likes_count || 0,
           creator_username: (listData.profiles as any)?.username ?? 'unknown',
+          creator_avatar_url: (listData.profiles as any)?.avatar_url ?? null,
         };
         setList(parsed);
         setLikesCount(parsed.likes_count);
@@ -135,15 +138,16 @@ export default function ListDetailPage({ params }: ListDetailPageProps) {
     const userIds = [...new Set(commentsData.map((c) => c.user_id))];
     const { data: profiles } = await supabase
       .from('profiles')
-      .select('id, username')
+      .select('id, username, avatar_url')
       .in('id', userIds);
 
-    const usernameMap = new Map((profiles || []).map((p) => [p.id, p.username]));
+    const profileMap = new Map((profiles || []).map((p) => [p.id, { username: p.username, avatar_url: p.avatar_url }]));
 
     setComments(
       commentsData.map((c) => ({
         ...c,
-        username: usernameMap.get(c.user_id) || 'unknown',
+        username: profileMap.get(c.user_id)?.username || 'unknown',
+        avatar_url: profileMap.get(c.user_id)?.avatar_url || null,
       }))
     );
   }, [id]);
@@ -295,8 +299,13 @@ export default function ListDetailPage({ params }: ListDetailPageProps) {
           {list.description && <p className="text-text-secondary mt-2">{list.description}</p>}
 
           <div className="flex items-center gap-3 mt-4 flex-wrap">
-            <div className="w-10 h-10 rounded-full bg-accent-orange flex items-center justify-center text-black font-bold text-sm flex-shrink-0">
-              {list.creator_username.charAt(0).toUpperCase()}
+            <div className="w-10 h-10 rounded-full bg-accent-orange flex items-center justify-center text-black font-bold text-sm flex-shrink-0 overflow-hidden">
+              {list.creator_avatar_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={list.creator_avatar_url} alt="" className="w-full h-full object-cover" />
+              ) : (
+                list.creator_username.charAt(0).toUpperCase()
+              )}
             </div>
             <Link
               href={`/profile/${list.creator_username}`}
@@ -482,8 +491,13 @@ export default function ListDetailPage({ params }: ListDetailPageProps) {
             <div className="space-y-4">
               {comments.map((comment) => (
                 <div key={comment.id} className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-bg-elevated flex items-center justify-center text-text-muted text-xs font-bold flex-shrink-0">
-                    {comment.username.charAt(0).toUpperCase()}
+                  <div className="w-8 h-8 rounded-full bg-bg-elevated flex items-center justify-center text-text-muted text-xs font-bold flex-shrink-0 overflow-hidden">
+                    {comment.avatar_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={comment.avatar_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      comment.username.charAt(0).toUpperCase()
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">

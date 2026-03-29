@@ -60,7 +60,7 @@ export default function GamePage({ params }: GamePageProps) {
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [justSaved, setJustSaved] = useState(false);
-  const [reviews, setReviews] = useState<{ id: string; username: string; user_id: string; rating: number | null; review: string; created_at: string }[]>([]);
+  const [reviews, setReviews] = useState<{ id: string; username: string; avatar_url: string | null; user_id: string; rating: number | null; review: string; created_at: string }[]>([]);
   const [logSessionOpen, setLogSessionOpen] = useState(false);
   const [totalHours, setTotalHours] = useState(0);
   const [reviewText, setReviewText] = useState('');
@@ -137,14 +137,15 @@ export default function GamePage({ params }: GamePageProps) {
       const userIds = [...new Set(filtered.map((r: any) => r.user_id))];
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, username')
+        .select('id, username, avatar_url')
         .in('id', userIds);
-      const profileMap = new Map((profiles || []).map((p: any) => [p.id, p.username]));
+      const profileMap = new Map((profiles || []).map((p: any) => [p.id, { username: p.username, avatar_url: p.avatar_url }]));
 
       setReviews(
         filtered.map((r: any) => ({
           id: r.id,
-          username: profileMap.get(r.user_id) || 'Anonymous',
+          username: profileMap.get(r.user_id)?.username || 'Anonymous',
+          avatar_url: profileMap.get(r.user_id)?.avatar_url || null,
           user_id: r.user_id,
           rating: r.rating,
           review: r.review,
@@ -950,8 +951,13 @@ export default function GamePage({ params }: GamePageProps) {
                         href={`/profile/${r.username}`}
                         className="flex items-center gap-2 group"
                       >
-                        <div className="w-7 h-7 rounded-full bg-accent-green flex items-center justify-center text-xs font-bold text-black flex-shrink-0">
-                          {r.username.charAt(0).toUpperCase()}
+                        <div className="w-7 h-7 rounded-full bg-accent-green flex items-center justify-center text-xs font-bold text-black flex-shrink-0 overflow-hidden">
+                          {r.avatar_url ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={r.avatar_url} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            r.username.charAt(0).toUpperCase()
+                          )}
                         </div>
                         <span className="text-sm font-medium text-text-primary group-hover:text-accent-orange transition-all duration-300">
                           {r.username}
