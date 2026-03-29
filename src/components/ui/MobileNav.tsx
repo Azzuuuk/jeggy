@@ -15,7 +15,7 @@ export default function MobileNav() {
   const { profile } = useProfile(user?.id);
   const [addMenuOpen, setAddMenuOpen] = useState(false);
 
-  const profileUrl = profile ? `/profile/${profile.username}` : '/login';
+  const profileUrl = profile ? `/profile/${profile.username}` : (user ? '/home' : '/login');
 
   // Hide on landing page (has its own layout)
   if (!user && pathname === '/') return null;

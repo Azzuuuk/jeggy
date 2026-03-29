@@ -34,13 +34,51 @@ export default function TasteQuizPage() {
         .gte('average_rating', 7)
         .gte('igdb_rating_count', 50)
         .order('igdb_rating_count', { ascending: false, nullsFirst: false })
-        .limit(80);
+        .limit(120);
 
       if (error) throw error;
 
-      // Filter out already-rated, then pick 20 diverse ones
+      // Filter out already-rated games
       const unrated = (data || []).filter(g => !ratedIds.includes(g.id));
-      setGames(unrated.slice(0, 20));
+
+      // Pick 20 genre-diverse games via round-robin across genre buckets
+      const genreBuckets: Record<string, typeof unrated> = {};
+      for (const game of unrated) {
+        const genre = game.genres?.[0] || 'Other';
+        if (!genreBuckets[genre]) genreBuckets[genre] = [];
+        genreBuckets[genre].push(game);
+      }
+
+      // Shuffle each bucket for randomness
+      const shuffle = <T,>(arr: T[]): T[] => {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      };
+
+      const shuffledBuckets = Object.values(genreBuckets).map(b => shuffle(b));
+      // Shuffle bucket order too
+      const bucketOrder = shuffle(shuffledBuckets);
+
+      const picked: typeof unrated = [];
+      let round = 0;
+      while (picked.length < 20) {
+        let added = false;
+        for (const bucket of bucketOrder) {
+          if (round < bucket.length && picked.length < 20) {
+            picked.push(bucket[round]);
+            added = true;
+          }
+        }
+        if (!added) break;
+        round++;
+      }
+
+      // Final shuffle so genres aren't grouped
+      setGames(shuffle(picked));
     } catch (error) {
       console.error('Error fetching quiz games:', error);
     } finally {
@@ -77,12 +115,12 @@ export default function TasteQuizPage() {
     if (currentIndex < games.length - 1) {
       setCurrentIndex(prev => prev + 1);
     } else {
-      router.push('/');
+      router.push('/home');
     }
   };
 
   const handleFinish = () => {
-    router.push('/');
+    router.push('/home');
   };
 
   if (loading) {
@@ -100,7 +138,7 @@ export default function TasteQuizPage() {
           <CheckCircle size={48} className="text-accent-green mx-auto mb-4" />
           <h1 className="text-2xl font-bold font-[family-name:var(--font-display)] text-text-primary mb-2">All caught up!</h1>
           <p className="text-text-secondary mb-6">You&apos;ve already rated the most popular games.</p>
-          <button onClick={() => router.push('/')} className="px-6 py-3 bg-accent-green hover:bg-accent-green-hover text-black rounded-sm font-semibold transition-all duration-300">
+          <button onClick={() => router.push('/home')} className="px-6 py-3 bg-accent-green hover:bg-accent-green-hover text-black rounded-sm font-semibold transition-all duration-300">
             Go Home
           </button>
         </div>
@@ -192,6 +230,18 @@ export default function TasteQuizPage() {
                   <CheckCircle size={14} /> Done ({ratingsGiven} rated)
                 </button>
               )}
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-border/50">
+              <button
+                onClick={handleFinish}
+                className="text-xs text-text-muted hover:text-text-secondary transition-colors"
+              >
+                Skip for now, I&apos;ll rate games on my own →
+              </button>
+              <p className="text-[11px] text-text-muted/60 mt-1.5">
+                You can always rate games from their detail pages to build your Gaming DNA.
+              </p>
             </div>
           </div>
         </div>

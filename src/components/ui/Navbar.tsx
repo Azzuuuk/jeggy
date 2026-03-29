@@ -30,7 +30,7 @@ export default function Navbar() {
   const { user, signOut } = useAuth();
   const { profile } = useProfile(user?.id);
 
-  const profileUrl = profile ? `/profile/${profile.username}` : '/login';
+  const profileUrl = profile ? `/profile/${profile.username}` : (user ? '/home' : '/login');
 
   const isLanding = !user && pathname === '/';
 
