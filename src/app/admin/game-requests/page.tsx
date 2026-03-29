@@ -78,15 +78,12 @@ export default function AdminGameRequestsPage() {
 
       // Notify the requester
       if (user && request.requester_id) {
-        const message = status === 'approved'
-          ? `Great news! Your request for "${request.game_name}" has been approved and will be added to Jeggy soon.`
-          : `Your game request for "${request.game_name}" could not be added at this time.${notes ? ' Note: ' + notes : ''}`;
-
         await createAdminNotification({
           userId: request.requester_id,
           adminId: user.id,
+          adminUsername: 'Jeggy Admin',
           type: 'game_request_update',
-          message,
+          gameName: request.game_name,
         });
       }
 

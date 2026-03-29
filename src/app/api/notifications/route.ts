@@ -9,9 +9,10 @@ const supabaseAdmin = createClient(
 // Create a notification
 export async function POST(request: NextRequest) {
   try {
-    const { userId, actorId, type, targetId, targetType, message } = await request.json();
+    const body = await request.json();
+    const { userId, actorId, actorUsername, actorDisplayName, type, listId, listTitle, gameId, gameName } = body;
 
-    if (!userId || !actorId || !type || !message) {
+    if (!userId || !actorId || !type || !actorUsername) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -22,10 +23,13 @@ export async function POST(request: NextRequest) {
     const { error } = await supabaseAdmin.from('notifications').insert({
       user_id: userId,
       actor_id: actorId,
+      actor_username: actorUsername,
+      actor_display_name: actorDisplayName || null,
       type,
-      target_id: targetId || null,
-      target_type: targetType || null,
-      message,
+      list_id: listId || null,
+      list_title: listTitle || null,
+      game_id: gameId || null,
+      game_name: gameName || null,
     });
 
     if (error) {
@@ -50,7 +54,7 @@ export async function GET(request: NextRequest) {
 
     const { data, error } = await supabaseAdmin
       .from('notifications')
-      .select('id, user_id, actor_id, type, target_id, target_type, message, is_read, created_at')
+      .select('id, user_id, actor_id, actor_username, actor_display_name, type, list_id, list_title, game_id, game_name, read, created_at')
       .eq('user_id', userId)
       .order('created_at', { ascending: false })
       .limit(20);
@@ -60,26 +64,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Enrich with actor usernames
-    if (data && data.length > 0) {
-      const actorIds = [...new Set(data.map(n => n.actor_id))];
-      const { data: profiles } = await supabaseAdmin
-        .from('profiles')
-        .select('id, username')
-        .in('id', actorIds);
-
-      const usernameMap: Record<string, string> = {};
-      profiles?.forEach(p => { usernameMap[p.id] = p.username; });
-
-      const enriched = data.map(n => ({
-        ...n,
-        actor_username: usernameMap[n.actor_id] || 'Someone',
-      }));
-
-      return NextResponse.json({ notifications: enriched });
-    }
-
-    return NextResponse.json({ notifications: [] });
+    return NextResponse.json({ notifications: data || [] });
   } catch (err) {
     console.error('Notification GET error:', err);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
@@ -96,9 +81,9 @@ export async function PATCH(request: NextRequest) {
 
     const { error } = await supabaseAdmin
       .from('notifications')
-      .update({ is_read: true })
+      .update({ read: true })
       .eq('user_id', userId)
-      .eq('is_read', false);
+      .eq('read', false);
 
     if (error) {
       console.error('Notification mark-read error:', error);

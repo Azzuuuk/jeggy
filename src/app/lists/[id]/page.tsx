@@ -180,10 +180,10 @@ export default function ListDetailPage({ params }: ListDetailPageProps) {
           createNotification({
             userId: list.user_id,
             actorId: user.id,
+            actorUsername: username,
             type: 'like_list',
-            targetId: id,
-            targetType: 'list',
-            message: `${username} liked your list "${list.title}"`,
+            listId: id,
+            listTitle: list.title,
           });
         }
       }
@@ -221,10 +221,10 @@ export default function ListDetailPage({ params }: ListDetailPageProps) {
         createNotification({
           userId: list.user_id,
           actorId: user.id,
+          actorUsername: username,
           type: 'comment_list',
-          targetId: id,
-          targetType: 'list',
-          message: `${username} commented on your list "${list.title}"`,
+          listId: id,
+          listTitle: list.title,
         });
       }
     } catch (err) {

@@ -73,8 +73,8 @@ export default function AdminUsersPage() {
       await createAdminNotification({
         userId: warningTarget.id,
         adminId: user.id,
+        adminUsername: 'Jeggy Admin',
         type: 'admin_warning',
-        message: warningMessage.trim(),
       });
       setWarningTarget(null);
       setWarningMessage('');

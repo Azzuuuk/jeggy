@@ -189,10 +189,10 @@ export default function DiaryPage() {
           createNotification({
             userId: session.user_id,
             actorId: user.id,
+            actorUsername: username,
             type: 'like_session',
-            targetId: sessionId,
-            targetType: 'session',
-            message: `${username} liked your ${gameName} session`,
+            gameId: session.game_id,
+            gameName,
           });
         }
       }

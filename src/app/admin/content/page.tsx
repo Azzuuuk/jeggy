@@ -207,8 +207,8 @@ export default function AdminContentPage() {
       await createAdminNotification({
         userId,
         adminId: user.id,
+        adminUsername: 'Jeggy Admin',
         type: 'content_removed',
-        message: 'Your review was removed by a moderator for violating community guidelines.',
       });
       fetchContent();
     } catch (err) {
@@ -224,8 +224,9 @@ export default function AdminContentPage() {
       await createAdminNotification({
         userId,
         adminId: user.id,
+        adminUsername: 'Jeggy Admin',
         type: 'content_removed',
-        message: `Your list "${listTitle}" was removed by a moderator for violating community guidelines.`,
+        listTitle,
       });
       fetchContent();
     } catch (err) {
@@ -236,7 +237,6 @@ export default function AdminContentPage() {
   const removeSession = async (sessionId: string, userId: string, username: string) => {
     if (!user || !confirm(`Delete diary session by @${username}? This will notify the user.`)) return;
     try {
-      // Get game_id before deleting so we can clean up the feed
       const { data: session } = await supabase.from('gaming_sessions').select('game_id').eq('id', sessionId).single();
       await supabase.from('gaming_sessions').delete().eq('id', sessionId);
       if (session?.game_id) {
@@ -245,8 +245,8 @@ export default function AdminContentPage() {
       await createAdminNotification({
         userId,
         adminId: user.id,
+        adminUsername: 'Jeggy Admin',
         type: 'content_removed',
-        message: 'Your diary session was removed by a moderator for violating community guidelines.',
       });
       fetchContent();
     } catch (err) {
@@ -260,8 +260,8 @@ export default function AdminContentPage() {
       await createAdminNotification({
         userId: warningTarget.userId,
         adminId: user.id,
+        adminUsername: 'Jeggy Admin',
         type: 'admin_warning',
-        message: warningMessage.trim(),
       });
       setWarningTarget(null);
       setWarningMessage('');

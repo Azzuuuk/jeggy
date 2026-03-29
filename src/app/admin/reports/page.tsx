@@ -98,8 +98,8 @@ export default function AdminReportsPage() {
       await createAdminNotification({
         userId: reporterId,
         adminId: user.id,
+        adminUsername: 'Jeggy Admin',
         type: 'report_resolved',
-        message: 'Your report was reviewed. No violation was found; the content will remain.',
       });
 
       fetchReports();
@@ -156,8 +156,8 @@ export default function AdminReportsPage() {
       await createAdminNotification({
         userId: report.reporter_id,
         adminId: user.id,
+        adminUsername: 'Jeggy Admin',
         type: 'report_resolved',
-        message: `Your report was reviewed. The ${contentLabel || 'content'} has been removed. Thanks for helping keep Jeggy clean!`,
       });
 
       // Notify the content owner
@@ -165,8 +165,8 @@ export default function AdminReportsPage() {
         await createAdminNotification({
           userId: contentOwnerId,
           adminId: user.id,
+          adminUsername: 'Jeggy Admin',
           type: 'content_removed',
-          message: `Your ${contentLabel || 'content'} was removed for violating community guidelines. Reason: ${REASON_LABELS[report.reason] || report.reason}.`,
         });
       }
 

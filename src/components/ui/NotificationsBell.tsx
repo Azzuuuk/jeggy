@@ -9,12 +9,14 @@ interface Notification {
   id: string;
   type: string;
   actor_id: string;
-  target_id: string | null;
-  target_type: string | null;
-  message: string;
-  is_read: boolean;
+  actor_username: string;
+  actor_display_name: string | null;
+  list_id: string | null;
+  list_title: string | null;
+  game_id: string | null;
+  game_name: string | null;
+  read: boolean;
   created_at: string;
-  actor_username?: string;
 }
 
 export function NotificationsBell() {
@@ -35,7 +37,7 @@ export function NotificationsBell() {
 
       if (res.ok && data.notifications) {
         setNotifications(data.notifications);
-        setUnreadCount(data.notifications.filter((n: Notification) => !n.is_read).length);
+        setUnreadCount(data.notifications.filter((n: Notification) => !n.read).length);
       } else {
         setNotifications([]);
         setUnreadCount(0);
@@ -77,7 +79,7 @@ export function NotificationsBell() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id }),
       });
-      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
       setUnreadCount(0);
     } catch (err) {
       console.error('Mark all read error:', err);
@@ -86,11 +88,25 @@ export function NotificationsBell() {
 
   const getNotificationLink = (n: Notification): string => {
     if (n.type === 'follow') return `/profile/${n.actor_username}`;
-    if (n.type === 'like_session') return '/diary';
-    if (n.target_type === 'list' && n.target_id) return `/lists/${n.target_id}`;
-    if (n.target_type === 'game' && n.target_id) return `/games/${n.target_id}`;
-    if (n.target_type === 'profile' && n.target_id) return `/profile/${n.target_id}`;
+    if (n.type === 'like_session' || n.type === 'like_session') return '/diary';
+    if ((n.type === 'like_list' || n.type === 'comment_list') && n.list_id) return `/lists/${n.list_id}`;
+    if (n.type === 'game_request_update' && n.game_id) return `/games/${n.game_id}`;
     return '#';
+  };
+
+  const getNotificationMessage = (n: Notification): string => {
+    const actor = n.actor_display_name || n.actor_username;
+    switch (n.type) {
+      case 'follow': return `${actor} started following you`;
+      case 'like_list': return `${actor} liked your list${n.list_title ? ` "${n.list_title}"` : ''}`;
+      case 'like_session': return `${actor} liked your ${n.game_name || 'gaming'} session`;
+      case 'comment_list': return `${actor} commented on your list${n.list_title ? ` "${n.list_title}"` : ''}`;
+      case 'game_request_update': return `Your request for "${n.game_name || 'a game'}" was updated`;
+      case 'report_resolved': return 'Your report has been reviewed';
+      case 'content_removed': return 'Your content was removed by a moderator';
+      case 'admin_warning': return 'You received a warning from a moderator';
+      default: return 'New notification';
+    }
   };
 
   const getNotificationIcon = (type: string) => {
@@ -167,15 +183,15 @@ export function NotificationsBell() {
                   href={getNotificationLink(n)}
                   onClick={() => setIsOpen(false)}
                   className={`flex items-start gap-3 px-4 py-3 hover:bg-bg-elevated transition-all duration-300 ${
-                    !n.is_read ? 'bg-accent-green/5' : ''
+                    !n.read ? 'bg-accent-green/5' : ''
                   }`}
                 >
                   <span className="text-lg flex-shrink-0 mt-0.5">{getNotificationIcon(n.type)}</span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-text-primary leading-snug">{n.message}</p>
+                    <p className="text-sm text-text-primary leading-snug">{getNotificationMessage(n)}</p>
                     <p className="text-xs text-text-muted mt-1">{timeAgo(n.created_at)}</p>
                   </div>
-                  {!n.is_read && (
+                  {!n.read && (
                     <span className="w-2 h-2 bg-accent-green rounded-full flex-shrink-0 mt-2" />
                   )}
                 </Link>

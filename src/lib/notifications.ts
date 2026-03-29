@@ -11,17 +11,23 @@ export type NotificationType =
 export async function createNotification({
   userId,
   actorId,
+  actorUsername,
+  actorDisplayName,
   type,
-  targetId,
-  targetType,
-  message,
+  listId,
+  listTitle,
+  gameId,
+  gameName,
 }: {
   userId: string;
   actorId: string;
+  actorUsername: string;
+  actorDisplayName?: string;
   type: NotificationType;
-  targetId?: string;
-  targetType?: string;
-  message: string;
+  listId?: string;
+  listTitle?: string;
+  gameId?: string;
+  gameName?: string;
 }) {
   if (userId === actorId) return;
 
@@ -29,7 +35,7 @@ export async function createNotification({
     const res = await fetch('/api/notifications', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, actorId, type, targetId, targetType, message }),
+      body: JSON.stringify({ userId, actorId, actorUsername, actorDisplayName, type, listId, listTitle, gameId, gameName }),
     });
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
@@ -44,23 +50,27 @@ export async function createNotification({
 export async function createAdminNotification({
   userId,
   adminId,
+  adminUsername,
   type,
-  targetId,
-  targetType,
-  message,
+  listId,
+  listTitle,
+  gameId,
+  gameName,
 }: {
   userId: string;
   adminId: string;
+  adminUsername: string;
   type: NotificationType;
-  targetId?: string;
-  targetType?: string;
-  message: string;
+  listId?: string;
+  listTitle?: string;
+  gameId?: string;
+  gameName?: string;
 }) {
   try {
     const res = await fetch('/api/notifications', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, actorId: adminId, type, targetId, targetType, message }),
+      body: JSON.stringify({ userId, actorId: adminId, actorUsername: adminUsername, type, listId, listTitle, gameId, gameName }),
     });
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));

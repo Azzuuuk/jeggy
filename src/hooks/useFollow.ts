@@ -81,8 +81,8 @@ export function useFollow(targetUserId: string | undefined) {
         createNotification({
           userId: targetUserId,
           actorId: user.id,
+          actorUsername: username,
           type: 'follow',
-          message: `${username} started following you`,
         })
       }
     } catch (err) {
