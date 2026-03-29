@@ -65,47 +65,25 @@ export default function DiaryInputModal({ isOpen, onClose }: DiaryInputModalProp
       const rl = await checkClientRateLimit('createSession', user.id);
       if (!rl.success) { alert(rl.message); setSaving(false); return; }
 
-      const insertData: Record<string, unknown> = {
-        user_id: user.id,
-        game_id: selectedGame.id.toString(),
-        hours_played: hoursPlayed,
-        session_date: sessionDate,
-        session_note: sessionNote.trim() || null,
-        platform,
-        is_public: isPublic,
-      };
-
-      // Include optional enrichment columns (may not exist on all schemas)
-      if (selectedGame.name) insertData.game_name = selectedGame.name;
-      if (selectedGame.cover_url) insertData.game_cover_url = selectedGame.cover_url;
-
       const { error } = await supabase
         .from('gaming_sessions')
-        .insert(insertData);
+        .insert({
+          user_id: user.id,
+          game_id: selectedGame.id.toString(),
+          hours_played: hoursPlayed,
+          session_date: sessionDate,
+          session_note: sessionNote.trim() || null,
+          platform,
+          is_public: isPublic,
+        });
 
-      if (error) {
-        // If column doesn't exist, retry without enrichment columns
-        if (error.message?.includes('column') || error.code === '42703') {
-          const { error: retryError } = await supabase
-            .from('gaming_sessions')
-            .insert({
-              user_id: user.id,
-              game_id: selectedGame.id.toString(),
-              hours_played: hoursPlayed,
-              session_date: sessionDate,
-              session_note: sessionNote.trim() || null,
-              platform,
-              is_public: isPublic,
-            });
-          if (retryError) throw retryError;
-        } else {
-          throw error;
-        }
-      }
+      if (error) throw error;
       onClose();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : (err as { message?: string })?.message || 'Unknown error';
-      console.error('Error logging session:', msg);
+      // PostgrestError has message, details, hint, code but isn't an Error instance
+      const pgErr = err as { message?: string; details?: string; hint?: string; code?: string };
+      const msg = pgErr?.message || pgErr?.details || (err instanceof Error ? err.message : JSON.stringify(err));
+      console.error('Error logging session:', msg, pgErr?.code, pgErr?.hint);
       alert(`Failed to log session: ${msg}`);
     } finally {
       setSaving(false);
